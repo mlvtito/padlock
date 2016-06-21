@@ -56,28 +56,21 @@ public class PadlockFilter implements ContainerRequestFilter {
     }
 
     private boolean needAuthentication() {
-        return !resourceInfo.getResourceMethod()
-                .isAnnotationPresent(WithoutAuthentication.class);
+        return !resourceInfo.getResourceMethod().isAnnotationPresent(WithoutAuthentication.class)
+                && !resourceInfo.getResourceMethod().isAnnotationPresent(Identification.class);
     }
 
     private void unauthorized(ContainerRequestContext requestContext) {
         requestContext.abortWith(
-                Response
-                .status(Response.Status.UNAUTHORIZED)
-                .build());
+                Response.status(Response.Status.UNAUTHORIZED).build()
+        );
     }
 
     private void parseJWTCookie(Cookie jwtCookie) throws UnauthorizedException {
         JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                //                .setRequireExpirationTime() // the JWT must have an expiration time
-                //                .setMaxFutureValidityInMinutes(300) // but the  expiration time can't be too crazy
-                //                .setAllowedClockSkewInSeconds(30) // allow some leeway in validating time based claims to account for clock skew
-                //                .setRequireSubject() // the JWT must have a subject claim
-                //                .setExpectedIssuer("Issuer") // whom the JWT needs to have been issued by
-                //                .setExpectedAudience("Audience") // to whom the JWT is intended for
-                .setVerificationKey(new HmacKey(JWT_HS256_KEY.getBytes())) // verify the signature with the public key
-                .build(); // create the JwtConsumer instance
-        
+                .setVerificationKey(new HmacKey(JWT_HS256_KEY.getBytes()))
+                .build();
+
         JwtClaims claims = tryToProcessToClaims(jwtCookie.getValue(), jwtConsumer);
     }
 
@@ -88,6 +81,7 @@ public class PadlockFilter implements ContainerRequestFilter {
             throw new UnauthorizedException();
         }
     }
+
     private class UnauthorizedException extends Exception {
 
     }

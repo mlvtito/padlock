@@ -112,8 +112,23 @@ public class PadlockFilterTest {
         verify(requestContext, never()).abortWith(any(Response.class));
     }
     
+    @Test
+    public void should_Authorized_when_Filtering_givenNOJWTTokenAndIdentificationMethod() throws NoSuchMethodException, IOException {
+        when(requestContext.getCookies()).thenReturn(NO_COOKIES_MAP);
+        when(resourceInfo.getResourceMethod()).thenReturn(
+                this.getClass().getMethod("methodForIdentification")
+        );
+        
+        padlockFilter.filter(requestContext);
+        
+        verify(requestContext, never()).abortWith(any(Response.class));
+    }
+    
     public void methodWithAuthentication() {}
     
     @WithoutAuthentication
     public void methodWithoutAuthentication() {}
+    
+    @Identification
+    public void methodForIdentification() {}
 }
