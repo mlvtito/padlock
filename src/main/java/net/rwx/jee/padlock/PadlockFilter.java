@@ -10,21 +10,27 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import org.jose4j.jws.AlgorithmIdentifiers;
+import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.keys.HmacKey;
+import org.jose4j.lang.JoseException;
 
 /**
  *
  * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
  */
-public class PadlockFilter implements ContainerRequestFilter {
+public class PadlockFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     private static final String JWT_COOKIE_NAME = "JTOKEN";
     private static final String JWT_HS256_KEY = "mdLhrTztDGE8DepxnTqoedwPgiGm64oQwm4j92Ad"
@@ -79,6 +85,25 @@ public class PadlockFilter implements ContainerRequestFilter {
             return jwtConsumer.processToClaims(jwtToken);
         } catch (InvalidJwtException ex) {
             throw new UnauthorizedException();
+        }
+    }
+
+    @Override
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+        try {
+            Object entity = responseContext.getEntity();
+            JwtClaims claims = new JwtClaims();
+            claims.setClaim("padlockBean", entity);
+            JsonWebSignature jws = new JsonWebSignature();
+            jws.setPayload(claims.toJson());
+            jws.setKey(new HmacKey(JWT_HS256_KEY.getBytes()));
+            jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.HMAC_SHA256);
+            String jwt = jws.getCompactSerialization();
+            
+            responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, new Cookie(JWT_COOKIE_NAME, jwt));
+        } catch (JoseException ex) {
+            // TODO : generate error during 
+            Logger.getLogger(PadlockFilter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
