@@ -16,6 +16,7 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
@@ -99,8 +100,8 @@ public class PadlockFilter implements ContainerRequestFilter, ContainerResponseF
             jws.setKey(new HmacKey(JWT_HS256_KEY.getBytes()));
             jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.HMAC_SHA256);
             String jwt = jws.getCompactSerialization();
-            
-            responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, new Cookie(JWT_COOKIE_NAME, jwt));
+            NewCookie cookie = NewCookie.valueOf(JWT_COOKIE_NAME+"="+jwt+";Secure;HttpOnly");
+            responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, cookie);
         } catch (JoseException ex) {
             // TODO : generate error during 
             Logger.getLogger(PadlockFilter.class.getName()).log(Level.SEVERE, null, ex);

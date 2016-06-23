@@ -141,6 +141,8 @@ public class PadlockFilterTest {
 
         assertThat(headers.get(HttpHeaders.SET_COOKIE).get(0)).extracting("name").containsExactly("JTOKEN");
         assertThat(headers.get(HttpHeaders.SET_COOKIE).get(0)).extracting("value").containsExactly(TOKEN_VALUE);
+        assertThat(headers.get(HttpHeaders.SET_COOKIE).get(0)).extracting("secure").containsExactly(true);
+        assertThat(headers.get(HttpHeaders.SET_COOKIE).get(0)).extracting("httpOnly").containsExactly(true);
     }
 
     public void methodWithAuthentication() {
