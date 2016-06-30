@@ -8,6 +8,8 @@ package net.rwx.jee.padlock;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -31,8 +33,12 @@ import org.jose4j.lang.JoseException;
  *
  * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
  */
+@RequestScoped
 public class PadlockFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
+    @Inject
+    private PadlockBeanService padlockBeanService;
+    
     private static final String JWT_COOKIE_NAME = "JTOKEN";
     private static final String JWT_HS256_KEY = "mdLhrTztDGE8DepxnTqoedwPgiGm64oQwm4j92Ad"
             + "VNWeiMRiq6PZWvZ8SAGrUuG5xogKkUyH6hcSkrvS4EdwzHnTj2sdshLXwBzyR2qdqCe5b6hTJt"
@@ -79,6 +85,8 @@ public class PadlockFilter implements ContainerRequestFilter, ContainerResponseF
                 .build();
 
         JwtClaims claims = tryToProcessToClaims(jwtCookie.getValue(), jwtConsumer);
+        Object padlockBean = claims.getClaimValue("padlockBean");
+        padlockBeanService.setPadlockBeanWrapper(new PadlockBeanWrapper(padlockBean));
     }
 
     private JwtClaims tryToProcessToClaims(String jwtToken, JwtConsumer jwtConsumer) throws UnauthorizedException {
