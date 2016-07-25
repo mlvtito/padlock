@@ -14,6 +14,9 @@ import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -54,11 +57,15 @@ public class PadlockFilter implements ContainerRequestFilter, ContainerResponseF
     @Context
     private ResourceInfo resourceInfo;
 
+    @Inject
+    private BeanManager beanManager;
+    
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         try {
             if (needAuthentication()) {
                 readJWTCookie(requestContext);
+                checkAuthorization();
             }
         } catch (UnauthorizedException ue) {
             unauthorized(requestContext);
@@ -134,6 +141,16 @@ public class PadlockFilter implements ContainerRequestFilter, ContainerResponseF
         } catch (JoseException ex) {
             // TODO : generate error during 
             Logger.getLogger(PadlockFilter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void checkAuthorization() {
+//        Authorization auth = beanManager.getBeans(Authorization.class).iterator().next();
+        Authorization authorization = resourceInfo.getResourceMethod().getAnnotation(Authorization.class);
+        if( authorization != null ) {
+//            CDI.current()
+//            Bean<?> authorizationChecker = beanManager.getBeans(authorization.value()).iterator().next();
+            
         }
     }
 

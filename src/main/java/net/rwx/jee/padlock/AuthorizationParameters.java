@@ -16,6 +16,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Authorization {
-    public Class value();
+public @interface AuthorizationParameters {
+    public AuthorizationParameter[] value();
 }
