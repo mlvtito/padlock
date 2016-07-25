@@ -41,12 +41,17 @@ public class PadlockFilterTest {
     private static final Map<String, Cookie> INVALID_COOKIES_MAP = new HashMap<>();
     private static final Map<String, Cookie> VALID_COOKIES_MAP = new HashMap<>();
     private static final String TOKEN_VALUE = "eyJhbGciOiJIUzI1NiJ9"
-            + ".eyJwYWRsb2NrQmVhbiI6Im5ldC5yd3guamVlLnBhZGxvY2suVGVzdFNlc3Npb25CZWFuQDIyMjExNGJhIn0"
-            + ".SIhcwsV2cBzMQQezBFk3gY467PZObX9V5NaDKTZ6t0g";
+            + ".eyJwYWRsb2NrQmVhbiI6InJPMEFCWE55QUNOdVpYUXVjbmQ0TG1wbFpTNXdZV1JzYjJOckxsUmxjM1JUWlhOemFXOXVRbVZoYmxQYU"
+            + "lvOGhzWTZWQWdBQ1RBQUlablZzYkU1aGJXVjBBQkpNYW1GMllTOXNZVzVuTDFOMGNtbHVaenRNQUFWc2IyZHBibkVBZmdBQmVIQjBBQ"
+            + "WxVWlhOMElFNWhiV1YwQUExMFpYTjBRSFJsYzNRdWJtVjAifQ"
+            + ".RWxOVgfavQhRXZck_VDPviT6TLyRpQYx4U3kKI3ZVO8";
 
     @InjectMocks
     private PadlockFilter padlockFilter;
 
+    @Mock
+    private PadlockBeanWrapper padlockBeanWrapper;
+    
     @Mock
     private ContainerRequestContext requestContext;
 
@@ -59,6 +64,9 @@ public class PadlockFilterTest {
     @Captor
     private ArgumentCaptor<Response> responseCaptor;
 
+    @Captor
+    private ArgumentCaptor<Object> padlockBeanCaptor;
+    
     @Before
     public void initInvalidCookie() {
         INVALID_COOKIES_MAP.put("JTOKEN", new Cookie("JTOKEN", "azertyui.qsdfghj.wxcvb"));
@@ -107,6 +115,16 @@ public class PadlockFilterTest {
         verify(requestContext, never()).abortWith(any(Response.class));
     }
 
+    public void should_SetPadlockbean_when_Filtering_given_ValidJWTToken() throws IOException {
+        when(requestContext.getCookies()).thenReturn(VALID_COOKIES_MAP);
+
+        padlockFilter.filter(requestContext);
+        
+        verify(padlockBeanWrapper).setBean(padlockBeanCaptor.capture());
+        TestSessionBean sessionBean = (TestSessionBean)padlockBeanCaptor.getValue();
+        assertThat(sessionBean.getLogin()).isEqualTo("test@test.net");
+    }
+    
     @Test
     public void should_Authorized_when_Filtering_given_NOJWTTokenAndWithoutAuth() throws IOException, NoSuchMethodException {
         when(requestContext.getCookies()).thenReturn(NO_COOKIES_MAP);
@@ -136,13 +154,16 @@ public class PadlockFilterTest {
         MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
         when(responseContext.getHeaders()).thenReturn(headers);
         when(responseContext.getEntity()).thenReturn(methodForIdentification());
+        when(resourceInfo.getResourceMethod()).thenReturn(
+                this.getClass().getMethod("methodForIdentification")
+        );
 
         padlockFilter.filter(requestContext, responseContext);
 
         assertThat(headers.get(HttpHeaders.SET_COOKIE).get(0)).extracting("name").containsExactly("JTOKEN");
-        assertThat(headers.get(HttpHeaders.SET_COOKIE).get(0)).extracting("value").containsExactly(TOKEN_VALUE);
         assertThat(headers.get(HttpHeaders.SET_COOKIE).get(0)).extracting("secure").containsExactly(true);
         assertThat(headers.get(HttpHeaders.SET_COOKIE).get(0)).extracting("httpOnly").containsExactly(true);
+        assertThat(headers.get(HttpHeaders.SET_COOKIE).get(0)).extracting("value").containsExactly(TOKEN_VALUE);
     }
 
     public void methodWithAuthentication() {

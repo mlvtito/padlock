@@ -5,14 +5,22 @@
  */
 package net.rwx.jee.padlock;
 
+import javax.enterprise.context.RequestScoped;
+
 /**
  *
  * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
  */
-public class PadlockBeanWrapper<P> {
-    public final P bean;
+@RequestScoped
+public class PadlockBeanWrapper {
 
-    public PadlockBeanWrapper(P bean) {
+    private Object bean;
+    
+    public <P> P getBean(Class<P> beanType) {
+        return (P)bean;
+    }
+    
+    void setBean(Object bean) {
         this.bean = bean;
     }
 }

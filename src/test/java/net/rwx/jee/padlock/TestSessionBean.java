@@ -5,13 +5,24 @@
  */
 package net.rwx.jee.padlock;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
  */
-public class TestSessionBean {
+public class TestSessionBean implements Serializable {
+
     private String login;
     private String fullName;
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
 
     public static class Builder {
 
