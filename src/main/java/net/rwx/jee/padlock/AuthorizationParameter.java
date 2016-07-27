@@ -14,7 +14,7 @@ import javax.ws.rs.container.ContainerRequestContext;
  *
  * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
  */
-public class AuthorizationParameter {
+class AuthorizationParameter {
 
     private final String name;
     private final Class<?> type;

@@ -20,7 +20,7 @@ import net.rwx.jee.padlock.annotations.AuthorizationParameters;
  *
  * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
  */
-public class AuthorizationChecker {
+class AuthorizationChecker {
 
     private final Object checker;
     private final Collection<AuthorizationParameter> parameters;
@@ -61,6 +61,8 @@ public class AuthorizationChecker {
             if (!(boolean) checkerMethod.invoke(checker)) {
                 throw new RuntimeException("NOT AUTHORIZED FROM CHECKER");
             }
+        }else {
+            throw new RuntimeException("No authorized method in authorization checker " + checker.getClass());
         }
     }
 
