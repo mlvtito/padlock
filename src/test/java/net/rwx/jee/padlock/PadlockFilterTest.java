@@ -5,6 +5,8 @@
  */
 package net.rwx.jee.padlock;
 
+import net.rwx.jee.padlock.annotations.Identification;
+import net.rwx.jee.padlock.annotations.WithoutAuthentication;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

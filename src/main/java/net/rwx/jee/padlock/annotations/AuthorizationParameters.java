@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.rwx.jee.padlock;
+package net.rwx.jee.padlock.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD,ElementType.FIELD})
-public @interface PadlockBean {
-    
+@Target(ElementType.METHOD)
+public @interface AuthorizationParameters {
+    public AuthorizationParameter[] value();
 }
