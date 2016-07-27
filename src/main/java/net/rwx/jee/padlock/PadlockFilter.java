@@ -54,6 +54,11 @@ public class PadlockFilter implements ContainerRequestFilter, ContainerResponseF
         }
     }
 
+    private boolean needAuthentication() {
+        return !resourceInfo.getResourceMethod().isAnnotationPresent(WithoutAuthentication.class)
+                && !resourceInfo.getResourceMethod().isAnnotationPresent(Identification.class);
+    }
+
     private void readTokenCookie(ContainerRequestContext requestContext) throws UnauthorizedException {
         Cookie tokenCookie = requestContext.getCookies().get(JWT_COOKIE_NAME);
         if (tokenCookie == null) {
@@ -74,15 +79,6 @@ public class PadlockFilter implements ContainerRequestFilter, ContainerResponseF
         authChecker.check();
     }
 
-    private boolean needAuthentication() {
-        return !resourceInfo.getResourceMethod().isAnnotationPresent(WithoutAuthentication.class)
-                && !resourceInfo.getResourceMethod().isAnnotationPresent(Identification.class);
-    }
-
-    private boolean isIdentification() {
-        return resourceInfo.getResourceMethod().isAnnotationPresent(Identification.class);
-    }
-
     private void unauthorized(ContainerRequestContext requestContext) {
         requestContext.abortWith(
                 Response.status(Response.Status.UNAUTHORIZED).build()
@@ -97,6 +93,9 @@ public class PadlockFilter implements ContainerRequestFilter, ContainerResponseF
             NewCookie cookie = NewCookie.valueOf(JWT_COOKIE_NAME + "=" + token + ";Secure;HttpOnly");
             responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, cookie);
         }
+    }
 
+    private boolean isIdentification() {
+        return resourceInfo.getResourceMethod().isAnnotationPresent(Identification.class);
     }
 }
