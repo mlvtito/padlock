@@ -64,7 +64,7 @@ public class PadlockFilter implements ContainerRequestFilter, ContainerResponseF
         padlockBeanWrapper.setBean(bean);
     }
 
-    private void checkAuthorization(ContainerRequestContext requestContext) {
+    private void checkAuthorization(ContainerRequestContext requestContext) throws UnauthorizedException {
         AuthorizationChecker authChecker = AuthorizationChecker.builder()
                 .fromAuthorizedMethod(resourceInfo.getResourceMethod())
                 .valueFrom(requestContext)

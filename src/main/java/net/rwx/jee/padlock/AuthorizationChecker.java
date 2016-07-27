@@ -26,9 +26,11 @@ class AuthorizationChecker {
     private final Collection<AuthorizationParameter> parameters;
     private final ParamConverters paramConverters;
 
-    public void check() {
+    public void check() throws UnauthorizedException {
         try {
             tryToCheck();
+        } catch( UnauthorizedException ue ) {
+            throw ue;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -59,7 +61,7 @@ class AuthorizationChecker {
         Method checkerMethod = checker.getClass().getMethod("authorized");
         if (checkerMethod != null) {
             if (!(boolean) checkerMethod.invoke(checker)) {
-                throw new RuntimeException("NOT AUTHORIZED FROM CHECKER");
+                throw new UnauthorizedException();
             }
         }else {
             throw new RuntimeException("No authorized method in authorization checker " + checker.getClass());
