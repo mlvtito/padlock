@@ -27,7 +27,7 @@ import org.jose4j.lang.JoseException;
  * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
  */
 @ApplicationScoped
-public class TokenHelper {
+class TokenHelper {
 
     private static final Logger logger = Logger.getLogger(TokenHelper.class.getName());
 
