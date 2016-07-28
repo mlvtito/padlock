@@ -10,6 +10,7 @@ import net.rwx.jee.padlock.annotations.WithoutAuthentication;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ResourceInfo;
@@ -18,19 +19,23 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import static org.assertj.core.api.Assertions.assertThat;
+import net.rwx.jee.padlock.annotations.Authorization;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
-import static org.mockito.Matchers.any;
 import org.mockito.Mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.runners.MockitoJUnitRunner;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 
 /**
  *
@@ -53,7 +58,10 @@ public class PadlockFilterTest {
 
     @Mock
     private PadlockBeanWrapper padlockBeanWrapper;
-    
+
+    @Mock
+    private TokenHelper tokenHelper;
+
     @Mock
     private ContainerRequestContext requestContext;
 
@@ -61,111 +69,130 @@ public class PadlockFilterTest {
     private ContainerResponseContext responseContext;
 
     @Mock
+    private BeanManager beanManager;
+
+    @Mock
     private ResourceInfo resourceInfo;
 
-    @Captor
-    private ArgumentCaptor<Response> responseCaptor;
-
-    @Captor
-    private ArgumentCaptor<Object> padlockBeanCaptor;
-    
     @Before
     public void initInvalidCookie() {
         INVALID_COOKIES_MAP.put("JTOKEN", new Cookie("JTOKEN", "azertyui.qsdfghj.wxcvb"));
     }
 
     @Before
-    public void initValidToken() {
+    public void initValidTokenAndMockItByDefault() throws UnauthorizedException {
         VALID_COOKIES_MAP.put("JTOKEN", new Cookie("JTOKEN", TOKEN_VALUE));
+        when(requestContext.getCookies()).thenReturn(VALID_COOKIES_MAP);
+        when(tokenHelper.parseTokenAndExtractBean(anyString()))
+                .thenReturn(TestSessionBean.builder().fullName("Name").login("test@test.net").build());
     }
 
     @Before
-    public void initMethodResource() throws NoSuchMethodException {
-        when(resourceInfo.getResourceMethod()).thenReturn(
-                this.getClass().getMethod("methodWithAuthentication")
-        );
+    public void mockBeanManager() {
+        mockBeanReference(new TestAuthorized());
+        mockBeanReference(new TestUnauthorization());
+    }
+
+    @Before
+    public void mockMethodWithAuthenticationByDefault() throws NoSuchMethodException {
+        mockResourceMethod("methodWithAuthentication");
     }
 
     @Test
-    public void should_Unauthorized_when_Filtering_given_NoJWTToken() throws IOException {
+    public void should_Unauthorized_when_FilteringRequest_having_NoTokenCookie() throws IOException {
         when(requestContext.getCookies()).thenReturn(NO_COOKIES_MAP);
-
         padlockFilter.filter(requestContext);
-
-        verify(requestContext).abortWith(responseCaptor.capture());
-        assertThat(responseCaptor.getValue().getStatus())
-                .isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+        assertUnauthorized();
     }
 
     @Test
-    public void should_Unauthorized_when_Filtering_given_InvalidJWTToken() throws IOException {
+    public void should_Unauthorized_when_FilteringRequest_having_InvalidToken() throws IOException, UnauthorizedException {
         when(requestContext.getCookies()).thenReturn(INVALID_COOKIES_MAP);
+        when(tokenHelper.parseTokenAndExtractBean(anyString())).thenThrow(new UnauthorizedException());
 
         padlockFilter.filter(requestContext);
 
-        verify(requestContext).abortWith(responseCaptor.capture());
-        assertThat(responseCaptor.getValue().getStatus())
-                .isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+        assertUnauthorized();
     }
 
     @Test
-    public void should_Authorized_when_Filtering_given_ValidJWTToken() throws IOException {
-        when(requestContext.getCookies()).thenReturn(VALID_COOKIES_MAP);
-
+    public void should_Authorized_when_FilteringRequest_having_ValidToken() throws IOException, UnauthorizedException {
         padlockFilter.filter(requestContext);
-
-        verify(requestContext, never()).abortWith(any(Response.class));
+        assertAuthorized();
     }
 
-    public void should_SetPadlockbean_when_Filtering_given_ValidJWTToken() throws IOException {
-        when(requestContext.getCookies()).thenReturn(VALID_COOKIES_MAP);
-
+    @Test
+    public void should_SetPadlockBean_when_FilteringRequest_having_ValidToken() throws IOException, UnauthorizedException {
         padlockFilter.filter(requestContext);
-        
+
+        ArgumentCaptor<Object> padlockBeanCaptor = ArgumentCaptor.forClass(Object.class);
         verify(padlockBeanWrapper).setBean(padlockBeanCaptor.capture());
-        TestSessionBean sessionBean = (TestSessionBean)padlockBeanCaptor.getValue();
+        TestSessionBean sessionBean = (TestSessionBean) padlockBeanCaptor.getValue();
         assertThat(sessionBean.getLogin()).isEqualTo("test@test.net");
     }
-    
+
     @Test
-    public void should_Authorized_when_Filtering_given_NOJWTTokenAndWithoutAuth() throws IOException, NoSuchMethodException {
+    public void should_Authorized_when_FilteringRequest_having_NOTokenAndWithoutAuth() throws IOException, NoSuchMethodException {
         when(requestContext.getCookies()).thenReturn(NO_COOKIES_MAP);
-        when(resourceInfo.getResourceMethod()).thenReturn(
-                this.getClass().getMethod("methodWithoutAuthentication")
-        );
-
+        mockResourceMethod("methodWithoutAuthentication");
         padlockFilter.filter(requestContext);
-
-        verify(requestContext, never()).abortWith(any(Response.class));
+        assertAuthorized();
     }
 
     @Test
-    public void should_Authorized_when_Filtering_given_NOJWTTokenAndIdentificationMethod() throws NoSuchMethodException, IOException {
+    public void should_Authorized_when_FilteringRequest_having_NOTokenAndIdentificationMethod() throws NoSuchMethodException, IOException {
         when(requestContext.getCookies()).thenReturn(NO_COOKIES_MAP);
-        when(resourceInfo.getResourceMethod()).thenReturn(
-                this.getClass().getMethod("methodForIdentification")
-        );
-
+        mockResourceMethod("methodForIdentification");
         padlockFilter.filter(requestContext);
-
-        verify(requestContext, never()).abortWith(any(Response.class));
+        assertAuthorized();
     }
 
     @Test
-    public void should_SetNewJWTCookie_when_FilteringResponse_given_IdentificationMethod() throws NoSuchMethodException, IOException {
+    public void should_SetTokenCookie_when_FilteringResponse_having_IdentificationMethod() throws NoSuchMethodException, IOException {
         MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
         when(responseContext.getHeaders()).thenReturn(headers);
         when(responseContext.getEntity()).thenReturn(methodForIdentification());
-        when(resourceInfo.getResourceMethod()).thenReturn(
-                this.getClass().getMethod("methodForIdentification")
-        );
+        when(tokenHelper.serializeBeanAndCreateToken(anyObject())).thenReturn("FAKETOKEN");
+        when(resourceInfo.getResourceMethod()).thenReturn(this.getClass().getMethod("methodForIdentification"));
 
         padlockFilter.filter(requestContext, responseContext);
 
         assertThat(headers.get(HttpHeaders.SET_COOKIE).get(0)).extracting("name").containsExactly("JTOKEN");
         assertThat(headers.get(HttpHeaders.SET_COOKIE).get(0)).extracting("secure").containsExactly(true);
         assertThat(headers.get(HttpHeaders.SET_COOKIE).get(0)).extracting("httpOnly").containsExactly(true);
-        assertThat(headers.get(HttpHeaders.SET_COOKIE).get(0)).extracting("value").containsExactly(TOKEN_VALUE);
+        assertThat(headers.get(HttpHeaders.SET_COOKIE).get(0)).extracting("value").containsExactly("FAKETOKEN");
+    }
+
+    @Test
+    public void should_Unauthorized_when_FilteringRequest_having_WrongAuthorization() throws NoSuchMethodException, UnauthorizedException {
+        mockResourceMethod("methodWithWrongAuthorization");
+        padlockFilter.filter(requestContext);
+        assertUnauthorized();
+    }
+
+    @Test
+    public void should_Authorized_when_FilteringRequest_having_RightAuthorization() throws NoSuchMethodException, UnauthorizedException {
+        mockResourceMethod("methodWithRightAuthorization");
+        padlockFilter.filter(requestContext);
+        assertAuthorized();
+    }
+
+    private void mockResourceMethod(String methodName) throws NoSuchMethodException {
+        when(resourceInfo.getResourceMethod()).thenReturn(this.getClass().getMethod(methodName));
+    }
+
+    private void mockBeanReference(Object reference) {
+        when(beanManager.getReference(any(), eq(reference.getClass()), any())).thenReturn(reference);
+    }
+
+    private void assertUnauthorized() {
+        ArgumentCaptor<Response> responseCaptor = ArgumentCaptor.forClass(Response.class);
+        verify(requestContext).abortWith(responseCaptor.capture());
+        assertThat(responseCaptor.getValue().getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+
+    private void assertAuthorized() {
+        verify(requestContext, never()).abortWith(any(Response.class));
     }
 
     public void methodWithAuthentication() {
@@ -178,5 +205,13 @@ public class PadlockFilterTest {
     @Identification
     public TestSessionBean methodForIdentification() {
         return TestSessionBean.builder().login("test@test.net").fullName("Test Name").build();
+    }
+
+    @Authorization(TestUnauthorization.class)
+    public void methodWithWrongAuthorization() {
+    }
+
+    @Authorization(TestAuthorized.class)
+    public void methodWithRightAuthorization() {
     }
 }

@@ -110,7 +110,7 @@ class AuthorizationChecker {
 
         private <T> T getReferenceToBean(Class<T> type) {
             Bean<T> bean = (Bean<T>) beanManager.resolve(beanManager.getBeans(type));
-            return (T) beanManager.getReference(bean, bean.getBeanClass(), beanManager.createCreationalContext(bean));
+            return (T) beanManager.getReference(bean, type, beanManager.createCreationalContext(bean));
         }
 
         private Collection<AuthorizationParameter> buildAuthorizationParameters() {
