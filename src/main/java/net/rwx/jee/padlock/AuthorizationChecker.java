@@ -129,10 +129,14 @@ class AuthorizationChecker {
 
         private net.rwx.jee.padlock.annotations.AuthorizationParameter[] getParameterAnnotations() {
             AuthorizationParameters params = authorizedMethod.getAnnotation(AuthorizationParameters.class);
-            if (params == null) {
-                return new net.rwx.jee.padlock.annotations.AuthorizationParameter[0];
-            } else {
+            net.rwx.jee.padlock.annotations.AuthorizationParameter param = authorizedMethod.getAnnotation(net.rwx.jee.padlock.annotations.AuthorizationParameter.class);
+            if (params != null) {
                 return params.value();
+            }else if(param != null) {
+                net.rwx.jee.padlock.annotations.AuthorizationParameter[] paramsArray = {param};
+                return paramsArray;
+            } else {
+                return new net.rwx.jee.padlock.annotations.AuthorizationParameter[0];
             }
         }
     }

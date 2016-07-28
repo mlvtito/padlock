@@ -8,6 +8,7 @@ package net.rwx.jee.padlock;
 import net.rwx.jee.padlock.annotations.Identification;
 import net.rwx.jee.padlock.annotations.WithoutAuthentication;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.inject.spi.BeanManager;
@@ -19,12 +20,12 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import net.rwx.jee.padlock.annotations.Authorization;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.never;
@@ -47,6 +48,8 @@ public class PadlockFilterTest {
     private static final Map<String, Cookie> NO_COOKIES_MAP = new HashMap<>();
     private static final Map<String, Cookie> INVALID_COOKIES_MAP = new HashMap<>();
     private static final Map<String, Cookie> VALID_COOKIES_MAP = new HashMap<>();
+    private static final MultivaluedMap<String, String> PATH_PARAMETERS = new MultivaluedHashMap<>();
+    
     private static final String TOKEN_VALUE = "eyJhbGciOiJIUzI1NiJ9"
             + ".eyJwYWRsb2NrQmVhbiI6InJPMEFCWE55QUNOdVpYUXVjbmQ0TG1wbFpTNXdZV1JzYjJOckxsUmxjM1JUWlhOemFXOXVRbVZoYmxQYU"
             + "lvOGhzWTZWQWdBQ1RBQUlablZzYkU1aGJXVjBBQkpNYW1GMllTOXNZVzVuTDFOMGNtbHVaenRNQUFWc2IyZHBibkVBZmdBQmVIQjBBQ"
@@ -73,12 +76,24 @@ public class PadlockFilterTest {
 
     @Mock
     private ResourceInfo resourceInfo;
-
+    
+    @Mock
+    private UriInfo uriInfo;
+    
     @Before
     public void initInvalidCookie() {
         INVALID_COOKIES_MAP.put("JTOKEN", new Cookie("JTOKEN", "azertyui.qsdfghj.wxcvb"));
     }
 
+    @Before
+    public void initAndMockResourceParameters() {
+        PATH_PARAMETERS.put("firstParameter", Arrays.asList("65"));
+        PATH_PARAMETERS.put("secondParameter", Arrays.asList("433"));
+        PATH_PARAMETERS.put("pathParameter", Arrays.asList("9876"));
+        when(requestContext.getUriInfo()).thenReturn(uriInfo);
+        when(uriInfo.getPathParameters()).thenReturn(PATH_PARAMETERS);
+    }
+    
     @Before
     public void initValidTokenAndMockItByDefault() throws UnauthorizedException {
         VALID_COOKIES_MAP.put("JTOKEN", new Cookie("JTOKEN", TOKEN_VALUE));
@@ -91,6 +106,8 @@ public class PadlockFilterTest {
     public void mockBeanManager() {
         mockBeanReference(new TestAuthorized());
         mockBeanReference(new TestUnauthorization());
+        mockBeanReference(new TestAuthorizedWithParameter());
+        mockBeanReference(new ParamConverters());
     }
 
     @Before
@@ -149,11 +166,11 @@ public class PadlockFilterTest {
 
     @Test
     public void should_SetTokenCookie_when_FilteringResponse_having_IdentificationMethod() throws NoSuchMethodException, IOException {
+        mockResourceMethod("methodForIdentification");
         MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
         when(responseContext.getHeaders()).thenReturn(headers);
-        when(responseContext.getEntity()).thenReturn(methodForIdentification());
         when(tokenHelper.serializeBeanAndCreateToken(anyObject())).thenReturn("FAKETOKEN");
-        when(resourceInfo.getResourceMethod()).thenReturn(this.getClass().getMethod("methodForIdentification"));
+        when(responseContext.getEntity()).thenReturn(new TestResource().methodForIdentification());
 
         padlockFilter.filter(requestContext, responseContext);
 
@@ -177,8 +194,32 @@ public class PadlockFilterTest {
         assertAuthorized();
     }
 
-    private void mockResourceMethod(String methodName) throws NoSuchMethodException {
-        when(resourceInfo.getResourceMethod()).thenReturn(this.getClass().getMethod(methodName));
+    @Test
+    public void should_SetParamIntoChecker_when_FilteringRequest_having_OneParameter() throws NoSuchMethodException {
+        mockResourceMethod("methodWithOneParameter", Integer.class);
+        padlockFilter.filter(requestContext);
+        assertThat(getTestAuthorizedWithParams().getFirstParameter()).isEqualTo(65);
+    }
+
+    
+    @Test
+    public void should_SetParamsIntoChecker_when_FilteringRequest_having_TwoParameters() throws NoSuchMethodException {
+        mockResourceMethod("methodWithTwoParameters", Integer.class, Integer.class);
+        padlockFilter.filter(requestContext);
+        TestAuthorizedWithParameter checker = getTestAuthorizedWithParams();
+        assertThat(checker.getFirstParameter()).isEqualTo(65);
+        assertThat(checker.getSecondParameter()).isEqualTo(433);
+    }
+    
+    @Test
+    public void should_SetParamIntoChecker_when_FilteringRequest_having_PathParam() throws NoSuchMethodException {
+        mockResourceMethod("methodWithPathParameter", Integer.class);
+        padlockFilter.filter(requestContext);
+        assertThat(getTestAuthorizedWithParams().getPathParameter()).isEqualTo(9876);
+    }
+    
+    private void mockResourceMethod(String methodName, Class<?>... parameters) throws NoSuchMethodException {
+        when(resourceInfo.getResourceMethod()).thenReturn(TestResource.class.getMethod(methodName, parameters));
     }
 
     private void mockBeanReference(Object reference) {
@@ -194,24 +235,9 @@ public class PadlockFilterTest {
     private void assertAuthorized() {
         verify(requestContext, never()).abortWith(any(Response.class));
     }
-
-    public void methodWithAuthentication() {
-    }
-
-    @WithoutAuthentication
-    public void methodWithoutAuthentication() {
-    }
-
-    @Identification
-    public TestSessionBean methodForIdentification() {
-        return TestSessionBean.builder().login("test@test.net").fullName("Test Name").build();
-    }
-
-    @Authorization(TestUnauthorization.class)
-    public void methodWithWrongAuthorization() {
-    }
-
-    @Authorization(TestAuthorized.class)
-    public void methodWithRightAuthorization() {
+    
+    private TestAuthorizedWithParameter getTestAuthorizedWithParams() {
+        return (TestAuthorizedWithParameter)beanManager
+                .getReference(null, TestAuthorizedWithParameter.class, null);
     }
 }
