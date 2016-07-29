@@ -8,6 +8,7 @@ package net.rwx.jee.padlock;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.ContainerRequestContext;
 
 /**
@@ -68,6 +69,7 @@ class AuthorizationParameter {
             for (int iMethodParameter = 0; iMethodParameter < annotations.length; iMethodParameter++) {
                 for (Annotation annotation : annotations[iMethodParameter]) {
                     extractPathParam(annotation, iMethodParameter);
+                    extractQueryParam(annotation, iMethodParameter);
                 }
             }
             checkIfValueHasBeenFound();
@@ -82,6 +84,13 @@ class AuthorizationParameter {
         private void extractPathParam(Annotation annotation, int iMethodParameter) {
             if (annotation instanceof PathParam && ((PathParam) annotation).value().equals(name)) {
                 value = requestContext.getUriInfo().getPathParameters().getFirst(name);
+                valueType = resourceMethod.getParameterTypes()[iMethodParameter];
+            }
+        }
+        
+        private void extractQueryParam(Annotation annotation, int iMethodParameter) {
+            if (annotation instanceof QueryParam && ((QueryParam) annotation).value().equals(name)) {
+                value = requestContext.getUriInfo().getQueryParameters().getFirst(name);
                 valueType = resourceMethod.getParameterTypes()[iMethodParameter];
             }
         }

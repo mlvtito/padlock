@@ -12,7 +12,7 @@ package net.rwx.jee.padlock;
 public class TestAuthorizedWithParameter {
     private Integer firstParameter;
     private Integer secondParameter;
-    private Integer pathParameter;
+    private Integer myParameter;
     
     public boolean authorized() {
         return true;
@@ -34,11 +34,11 @@ public class TestAuthorizedWithParameter {
         this.secondParameter = secondParameter;
     }
 
-    public Integer getPathParameter() {
-        return pathParameter;
+    public Integer getMyParameter() {
+        return myParameter;
     }
 
-    public void setPathParameter(Integer pathParameter) {
-        this.pathParameter = pathParameter;
+    public void setMyParameter(Integer pathParameter) {
+        this.myParameter = pathParameter;
     }
 }

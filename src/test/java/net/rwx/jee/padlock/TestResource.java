@@ -6,6 +6,7 @@
 package net.rwx.jee.padlock;
 
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import net.rwx.jee.padlock.annotations.Authorization;
 import net.rwx.jee.padlock.annotations.AuthorizationParameter;
 import net.rwx.jee.padlock.annotations.Identification;
@@ -49,7 +50,12 @@ public class TestResource {
     }
     
     @Authorization(TestAuthorizedWithParameter.class)
-    @AuthorizationParameter("pathParameter")
-    public void methodWithPathParameter(@PathParam("pathParameter") Integer myParam) {
+    @AuthorizationParameter("myParameter")
+    public void methodWithPathParameter(@PathParam("myParameter") Integer myParam) {
+    }
+    
+    @Authorization(TestAuthorizedWithParameter.class)
+    @AuthorizationParameter("myParameter")
+    public void methodWithQueryParameter(@QueryParam("myParameter") Integer myParam) {
     }
 }

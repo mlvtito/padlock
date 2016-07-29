@@ -49,6 +49,7 @@ public class PadlockFilterTest {
     private static final Map<String, Cookie> INVALID_COOKIES_MAP = new HashMap<>();
     private static final Map<String, Cookie> VALID_COOKIES_MAP = new HashMap<>();
     private static final MultivaluedMap<String, String> PATH_PARAMETERS = new MultivaluedHashMap<>();
+    private static final MultivaluedMap<String, String> QUERY_PARAMETERS = new MultivaluedHashMap<>();
     
     private static final String TOKEN_VALUE = "eyJhbGciOiJIUzI1NiJ9"
             + ".eyJwYWRsb2NrQmVhbiI6InJPMEFCWE55QUNOdVpYUXVjbmQ0TG1wbFpTNXdZV1JzYjJOckxsUmxjM1JUWlhOemFXOXVRbVZoYmxQYU"
@@ -89,9 +90,13 @@ public class PadlockFilterTest {
     public void initAndMockResourceParameters() {
         PATH_PARAMETERS.put("firstParameter", Arrays.asList("65"));
         PATH_PARAMETERS.put("secondParameter", Arrays.asList("433"));
-        PATH_PARAMETERS.put("pathParameter", Arrays.asList("9876"));
+        PATH_PARAMETERS.put("myParameter", Arrays.asList("9876"));
+        
+        QUERY_PARAMETERS.put("myParameter", Arrays.asList("4321"));
+        
         when(requestContext.getUriInfo()).thenReturn(uriInfo);
         when(uriInfo.getPathParameters()).thenReturn(PATH_PARAMETERS);
+        when(uriInfo.getQueryParameters()).thenReturn(QUERY_PARAMETERS);
     }
     
     @Before
@@ -215,7 +220,14 @@ public class PadlockFilterTest {
     public void should_SetParamIntoChecker_when_FilteringRequest_having_PathParam() throws NoSuchMethodException {
         mockResourceMethod("methodWithPathParameter", Integer.class);
         padlockFilter.filter(requestContext);
-        assertThat(getTestAuthorizedWithParams().getPathParameter()).isEqualTo(9876);
+        assertThat(getTestAuthorizedWithParams().getMyParameter()).isEqualTo(9876);
+    }
+    
+    @Test
+    public void should_SetParamIntoChecker_when_FilteringRequest_having_QueryParam() throws NoSuchMethodException {
+        mockResourceMethod("methodWithQueryParameter", Integer.class);
+        padlockFilter.filter(requestContext);
+        assertThat(getTestAuthorizedWithParams().getMyParameter()).isEqualTo(4321);
     }
     
     private void mockResourceMethod(String methodName, Class<?>... parameters) throws NoSuchMethodException {
