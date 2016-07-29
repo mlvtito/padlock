@@ -22,10 +22,12 @@ class ParamConverters {
 
     public ParamConverters() {
         converters = new HashMap<>();
-        converters.put(Integer.class.getName(), new IntegerConverter());
         converters.put(int.class.getName(), new IntegerConverter());
-        converters.put(Long.class.getName(), new LongConverter());
         converters.put(long.class.getName(), new LongConverter());
+        converters.put(boolean.class.getName(), new BooleanConverter());
+        converters.put(Integer.class.getName(), new IntegerConverter());
+        converters.put(Long.class.getName(), new LongConverter());
+        converters.put(Boolean.class.getName(), new BooleanConverter());
         converters.put(String.class.getName(), new StringConverter());
     }
 
@@ -67,6 +69,14 @@ class ParamConverters {
         @Override
         public String fromString(String value) {
             return value;
+        }
+    }
+    
+    private class BooleanConverter extends FromStringConverter<Boolean> {
+
+        @Override
+        public Boolean fromString(String value) {
+            return Boolean.parseBoolean(value);
         }
     }
 }

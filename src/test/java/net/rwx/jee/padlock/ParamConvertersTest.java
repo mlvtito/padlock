@@ -48,4 +48,16 @@ public class ParamConvertersTest {
         String value = paramConverters.convertValueToType("my string", String.class, NO_ADDITIONAL_CONVERTER);
         assertThat(value).isEqualTo("my string");
     }
+    
+    @Test
+    public void should_GetBoolean_when_Converting() {
+        Boolean value = paramConverters.convertValueToType("true", Boolean.class, NO_ADDITIONAL_CONVERTER);
+        assertThat(value).isTrue();
+    }
+    
+    @Test
+    public void should_GetBooleanNative_when_Converting() {
+        boolean value = paramConverters.convertValueToType("false", boolean.class, NO_ADDITIONAL_CONVERTER);
+        assertThat(value).isFalse();
+    }
 }
