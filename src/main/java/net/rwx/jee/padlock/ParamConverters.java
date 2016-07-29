@@ -26,6 +26,7 @@ class ParamConverters {
         converters.put(int.class.getName(), new IntegerConverter());
         converters.put(Long.class.getName(), new LongConverter());
         converters.put(long.class.getName(), new LongConverter());
+        converters.put(String.class.getName(), new StringConverter());
     }
 
     public <T> T convertValueToType(String value, Class<T> type, Collection<Class<?>> customConverters) {
@@ -58,6 +59,14 @@ class ParamConverters {
         @Override
         public Long fromString(String value) {
             return Long.parseLong(value);
+        }
+    }
+    
+    private class StringConverter extends FromStringConverter<String> {
+
+        @Override
+        public String fromString(String value) {
+            return value;
         }
     }
 }

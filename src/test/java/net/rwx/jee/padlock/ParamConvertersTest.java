@@ -42,4 +42,10 @@ public class ParamConvertersTest {
         long value = paramConverters.convertValueToType("65", long.class, NO_ADDITIONAL_CONVERTER);
         assertThat(value).isEqualTo(65L);
     }
+    
+    @Test
+    public void should_GetString_when_Converting() {
+        String value = paramConverters.convertValueToType("my string", String.class, NO_ADDITIONAL_CONVERTER);
+        assertThat(value).isEqualTo("my string");
+    }
 }
