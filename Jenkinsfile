@@ -14,6 +14,7 @@ node {
      }
      stage('Tests') {
         sh "mvn test"
+        step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
      }
    }
 }
