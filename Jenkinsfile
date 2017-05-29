@@ -9,7 +9,7 @@ node {
       env.PATH = "${mvnHome}/bin:${env.PATH}"
    }
    withEnv(["PATH=${tool 'Maven3.3.9'}/bin:${PATH}"]) {
-     stage('Install Dependencies') {
+     stage('Build') {
          sh "mvn clean install -DskipTests"
      }
      stage('Tests') {
