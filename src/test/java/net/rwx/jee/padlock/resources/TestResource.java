@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.rwx.jee.padlock;
+package net.rwx.jee.padlock.resources;
 
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import net.rwx.jee.padlock.TestSessionBean;
 import net.rwx.jee.padlock.annotations.Authorization;
 import net.rwx.jee.padlock.annotations.AuthorizationParameter;
 import net.rwx.jee.padlock.annotations.Identification;

@@ -5,6 +5,10 @@
  */
 package net.rwx.jee.padlock;
 
+import net.rwx.jee.padlock.resources.TestUnauthorization;
+import net.rwx.jee.padlock.resources.TestAuthorized;
+import net.rwx.jee.padlock.resources.TestAuthorizedWithParameter;
+import net.rwx.jee.padlock.resources.TestResource;
 import net.rwx.jee.padlock.annotations.Identification;
 import net.rwx.jee.padlock.annotations.WithoutAuthentication;
 import java.io.IOException;

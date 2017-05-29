@@ -5,6 +5,7 @@
  */
 package net.rwx.jee.padlock;
 
+import net.rwx.jee.padlock.resources.TestUnserializableSessionBean;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 

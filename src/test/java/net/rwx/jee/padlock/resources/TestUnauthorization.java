@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.rwx.jee.padlock;
+package net.rwx.jee.padlock.resources;
 
 /**
  *
  * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
  */
-public class TestAuthorized {
+public class TestUnauthorization {
     public boolean authorized() {
-        return true;
+        return false;
     }
 }

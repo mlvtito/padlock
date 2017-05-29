@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.rwx.jee.padlock;
+package net.rwx.jee.padlock.resources;
 
 import java.io.Serializable;
 
@@ -43,7 +43,7 @@ public class TestUnserializableSessionBean {
         }
 
         public TestUnserializableSessionBean build() {
-            return new net.rwx.jee.padlock.TestUnserializableSessionBean(login, fullName);
+            return new net.rwx.jee.padlock.resources.TestUnserializableSessionBean(login, fullName);
         }
     }
 
