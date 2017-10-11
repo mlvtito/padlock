@@ -25,7 +25,7 @@ pipeline {
                 }
                 always {
                     junit '**/target/surefire-reports/TEST-*.xml'
-                    jacoco
+                    step( [ $class: 'JacocoPublisher' ] )
                 }
             }
         }
