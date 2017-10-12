@@ -9,6 +9,7 @@
     
     <artifactId>padlock</artifactId>
     <packaging>jar</packaging>
+    <name>Padlock Library</name>
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
