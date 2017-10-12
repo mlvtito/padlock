@@ -27,4 +27,54 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.glassfish.embedded</groupId>
+                <artifactId>maven-embedded-glassfish-plugin</artifactId>
+                <version>4.1.1</version>
+                <configuration>
+                    <goalPrefix>glassfish</goalPrefix>
+                    <app>target/testapp-1.0-SNAPSHOT.war</app>
+                    <port>8080</port>
+                    <contextRoot>test</contextRoot>
+                    <name>padlock-testapp</name>
+                    <serverID>embedded</serverID>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                    
+                    <execution>
+                        <id>admin</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>admin</goal>
+                        </goals>
+                        <configuration>
+                            <commands>
+                                <param>list-applications</param>
+                            </commands>
+                        </configuration>
+                    </execution>
+                    
+                    <execution>
+                        <id>stop</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>undeploy</goal>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
