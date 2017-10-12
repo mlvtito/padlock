@@ -50,6 +50,7 @@
                             <goal>start</goal>
                             <goal>deploy</goal>
                         </goals>
+                        <configuration><skip>${skipITs}</skip></configuration>
                     </execution>
                     
                     <execution>
@@ -59,6 +60,7 @@
                             <goal>admin</goal>
                         </goals>
                         <configuration>
+                            <configuration><skip>${skipITs}</skip></configuration>
                             <commands>
                                 <param>list-applications</param>
                             </commands>
@@ -72,6 +74,7 @@
                             <goal>undeploy</goal>
                             <goal>stop</goal>
                         </goals>
+                        <configuration><skip>${skipITs}</skip></configuration>
                     </execution>
                 </executions>
             </plugin>
