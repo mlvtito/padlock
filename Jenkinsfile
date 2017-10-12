@@ -11,18 +11,33 @@ pipeline {
             }
         }
 
-        stage('Unit Tests & Build') {
+        stage('Build') {
             tools { 
                 maven 'Maven3.3.9' 
             }
             steps {
                 sh "mvn --version"
-                sh "mvn clean install"
+                sh "mvn clean install -DskipTests"
             }
             post {
                 success {
                     archive "**/lib/target/*.jar"
                 }
+                always {
+                    junit '**/lib/target/surefire-reports/TEST-*.xml'
+                    step( [ $class: 'JacocoPublisher', execPattern: 'lib/target/jacoco.exec' ] )
+                }
+            }
+        }
+
+        stage('Unit Tests') {
+            tools { 
+                maven 'Maven3.3.9' 
+            }
+            steps {
+                sh "mvn test"
+            }
+            post {
                 always {
                     junit '**/lib/target/surefire-reports/TEST-*.xml'
                     step( [ $class: 'JacocoPublisher', execPattern: 'lib/target/jacoco.exec' ] )
