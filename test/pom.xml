@@ -23,7 +23,7 @@
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>8.0</version>
+            <version>7.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -36,7 +36,7 @@
                 <version>4.1.1</version>
                 <configuration>
                     <goalPrefix>glassfish</goalPrefix>
-                    <app>target/testapp-1.0-SNAPSHOT.war</app>
+                    <app>target/testapp-${project.version}.war</app>
                     <port>8080</port>
                     <contextRoot>test</contextRoot>
                     <name>padlock-testapp</name>
