@@ -21,11 +21,11 @@ pipeline {
             }
             post {
                 success {
-                    archive "**/target/*.jar"
+                    archive "**/lib/target/*.jar"
                 }
                 always {
-                    junit '**/target/surefire-reports/TEST-*.xml'
-                    step( [ $class: 'JacocoPublisher' ] )
+                    junit '**/lib/target/surefire-reports/TEST-*.xml'
+                    step( [ $class: 'JacocoPublisher', execPattern: 'lib/target/jacoco.exec' ] )
                 }
             }
         }
