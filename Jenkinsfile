@@ -16,16 +16,11 @@ pipeline {
                 maven 'Maven3.3.9' 
             }
             steps {
-                sh "mvn --version"
-                sh "mvn clean install -DskipTests"
+                sh "mvn clean install -DskipTests -DskipITs"
             }
             post {
                 success {
                     archive "**/lib/target/*.jar"
-                }
-                always {
-                    junit '**/lib/target/surefire-reports/TEST-*.xml'
-                    step( [ $class: 'JacocoPublisher', execPattern: 'lib/target/jacoco.exec' ] )
                 }
             }
         }
