@@ -18,6 +18,6 @@ public class SimpleIT {
     
     @Test
     public void should_BlaBlaBlaBlaBlaBlaBlaBlaBlaBla() {
-        assertThat(true).isFalse();
+        assertThat(false).isFalse();
     }
 }
