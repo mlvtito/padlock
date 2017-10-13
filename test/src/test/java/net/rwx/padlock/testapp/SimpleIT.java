@@ -3,6 +3,7 @@ package net.rwx.padlock.testapp;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
@@ -19,10 +20,10 @@ import org.junit.Test;
 public class SimpleIT {
     
     @Test
-    public void should_BlaBlaBlaBlaBlaBlaBlaBlaBlaBla() {
-        String response = ClientBuilder.newClient()
+    public void should_BeProtectedByDefault_when_DeclaringRestResource() {
+        Response.StatusType status = ClientBuilder.newClient()
                 .target("http://localhost:8080/test").path("api/simple")
-                .request(MediaType.APPLICATION_JSON).get(String.class);
-        assertThat(response).isEqualTo("OK");
+                .request(MediaType.APPLICATION_JSON).get().getStatusInfo();
+        assertThat(status.getStatusCode()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
     }
 }

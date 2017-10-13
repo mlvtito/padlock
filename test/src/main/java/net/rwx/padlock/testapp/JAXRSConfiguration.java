@@ -5,8 +5,11 @@
  */
 package net.rwx.padlock.testapp;
 
+import java.util.HashSet;
+import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+import net.rwx.jee.padlock.PadlockFilter;
 
 /**
  *
@@ -14,5 +17,4 @@ import javax.ws.rs.core.Application;
  */
 @ApplicationPath("api")
 public class JAXRSConfiguration extends Application {
-    
 }

@@ -20,12 +20,14 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
 
 /**
  *
  * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
  */
 @RequestScoped
+@Provider
 public class PadlockFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     @Inject
