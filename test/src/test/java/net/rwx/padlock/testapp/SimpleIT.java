@@ -1,6 +1,8 @@
 package net.rwx.padlock.testapp;
 
 
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.MediaType;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
@@ -18,6 +20,9 @@ public class SimpleIT {
     
     @Test
     public void should_BlaBlaBlaBlaBlaBlaBlaBlaBlaBla() {
-        assertThat(false).isFalse();
+        String response = ClientBuilder.newClient()
+                .target("http://localhost:8080/test").path("api/simple")
+                .request(MediaType.APPLICATION_JSON).get(String.class);
+        assertThat(response).isEqualTo("OK");
     }
 }
