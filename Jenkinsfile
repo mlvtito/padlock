@@ -47,12 +47,6 @@ pipeline {
             steps {
                 sh "mvn verify -DskipTests=true -DskpiITs=false"
             }
-            post {
-                always {
-                    junit '**/test/target/surefire-reports/TEST-*.xml'
-                    step( [ $class: 'JacocoPublisher', execPattern: 'test/target/jacoco.exec' ] )
-                }
-            }
         }
     }
 }
