@@ -16,7 +16,7 @@ pipeline {
                 maven 'Maven3.3.9' 
             }
             steps {
-                sh "mvn clean install -DskipTests -DskipITs"
+                sh "mvn clean install -DskipTests"
             }
             post {
                 success {
@@ -45,7 +45,7 @@ pipeline {
                 maven 'Maven3.3.9' 
             }
             steps {
-                sh "mvn verify -DskipTests=true -DskpiITs=false"
+                sh "mvn verify -P integration-test"
             }
         }
     }
