@@ -7,6 +7,7 @@ package net.rwx.padlock.testapp;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import net.rwx.jee.padlock.annotations.WithoutAuthentication;
 
 /**
  *
@@ -16,7 +17,15 @@ import javax.ws.rs.Path;
 public class SimpleResource {
     
     @GET
+    @Path("noAnnotation")
     public String get() {
-        return "OK";
+        return "without annotation";
+    }
+    
+    @GET
+    @Path("withoutAuthentication")
+    @WithoutAuthentication
+    public String withoutAuthentication() {
+        return "without authentication";
     }
 }
