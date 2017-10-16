@@ -95,22 +95,6 @@
                             </execution>
                     
                             <execution>
-                                <id>admin</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>admin</goal>
-                                </goals>
-                                <configuration>
-                                    <configuration>
-                                        <skip>${skipITs}</skip>
-                                    </configuration>
-                                    <commands>
-                                        <param>list-applications</param>
-                                    </commands>
-                                </configuration>
-                            </execution>
-                    
-                            <execution>
                                 <id>stop</id>
                                 <phase>post-integration-test</phase>
                                 <goals>
