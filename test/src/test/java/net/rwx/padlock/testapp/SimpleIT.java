@@ -1,10 +1,12 @@
 package net.rwx.padlock.testapp;
 
+import java.util.Map;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
@@ -40,14 +42,14 @@ public class SimpleIT {
 
     @Test
     public void should_HaveGetBean_when_Login() {
-        Form form = new Form();
-        form.param("login", "my-wisely-choose-login")
+        Form form = new Form()
+                .param("login", "my-wisely-choose-login")
                 .param("password", "my-wisely-choose-login");
 
-        TestUserBean bean = client.path("api/simple/login")
-                .request(MediaType.APPLICATION_JSON).post(Entity.form(form), TestUserBean.class);
-        
-        assertThat(bean.getName()).isEqualTo("John Doe");
-        assertThat(bean.getMail()).isEqualTo("john.doe@test.net");
+        Map<String, NewCookie> cookies = client.path("api/simple/login")
+                .request(MediaType.APPLICATION_JSON).post(Entity.form(form)).getCookies();
+
+        assertThat(cookies).containsKeys("JTOKEN");
+        System.out.println("######## " + cookies.get("JTOKEN").toString());
     }
 }

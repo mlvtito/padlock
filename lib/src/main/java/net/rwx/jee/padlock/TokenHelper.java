@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Base64;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
@@ -49,10 +50,15 @@ class TokenHelper {
         }
     }
 
-    String serializeBeanAndCreateToken(Object bean) {
+    String serializeBeanAndCreateToken(PadlockSession bean) {
         try {
             JwtClaims claims = new JwtClaims();
-            serializeBean(claims, bean);
+            Enumeration<String> names = bean.getAttributeNames();
+            while( names.hasMoreElements() ) {
+                String name = names.nextElement();
+                String claim = serializeBean(bean.getAttribute(name));
+                claims.setClaim(name, claim);
+            }
             JsonWebSignature jws = new JsonWebSignature();
             jws.setPayload(claims.toJson());
             jws.setKey(new HmacKey(JWT_HS256_KEY.getBytes()));
@@ -75,12 +81,12 @@ class TokenHelper {
         }
     }
 
-    private void serializeBean(JwtClaims claims, Object bean) throws IOException {
+    private String serializeBean(Object bean) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(bean);
         }
-        claims.setClaim(BEAN_CLAIM_KEY, Base64.getEncoder().encodeToString(baos.toByteArray()));
+        return Base64.getEncoder().encodeToString(baos.toByteArray());
     }
 
     private static ObjectInputStream buildObjectInputStream(String serializedBean) throws IOException {

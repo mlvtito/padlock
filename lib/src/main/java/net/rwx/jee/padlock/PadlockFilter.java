@@ -33,6 +33,9 @@ public class PadlockFilter implements ContainerRequestFilter, ContainerResponseF
     @Inject
     private PadlockBeanWrapper padlockBeanWrapper;
 
+    @Inject
+    private PadlockSession session;
+    
     private static final String JWT_COOKIE_NAME = "JTOKEN";
 
     @Context
@@ -89,15 +92,10 @@ public class PadlockFilter implements ContainerRequestFilter, ContainerResponseF
 
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
-        if (isIdentification()) {
-            Object entity = responseContext.getEntity();
-            String token = tokenHelper.serializeBeanAndCreateToken(entity);
+        if (!session.isEmpty()) {
+            String token = tokenHelper.serializeBeanAndCreateToken(session);
             NewCookie cookie = NewCookie.valueOf(JWT_COOKIE_NAME + "=" + token + ";Secure;HttpOnly");
             responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, cookie);
         }
-    }
-
-    private boolean isIdentification() {
-        return resourceInfo.getResourceMethod().isAnnotationPresent(Identification.class);
     }
 }
