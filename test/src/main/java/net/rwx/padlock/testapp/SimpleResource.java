@@ -10,9 +10,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
 import net.rwx.jee.padlock.PadlockSession;
-import net.rwx.jee.padlock.annotations.Identification;
 import net.rwx.jee.padlock.annotations.WithoutAuthentication;
 
 /**
@@ -21,31 +19,37 @@ import net.rwx.jee.padlock.annotations.WithoutAuthentication;
  */
 @Path("simple")
 public class SimpleResource {
-    
+
     @Inject
     private PadlockSession session;
-    
+
     @GET
     @Path("noAnnotation")
-    public String get() {
-        return "without annotation";
+    public String noAnnotation() {
+        return "not authorized";
     }
     
+    @GET
+    @Path("getNameFromSession")
+    public String getNameFromSession() {
+        return session.getAttribute("user", TestUserBean.class).getName();
+    }
+
     @GET
     @Path("withoutAuthentication")
     @WithoutAuthentication
     public String withoutAuthentication() {
         return "without authentication";
     }
-    
+
     @POST
     @Path("login")
     @WithoutAuthentication
     public String login(@FormParam("login") String login, @FormParam("password") String password) {
-        if( login.equals(password)) {
+        if (login.equals(password)) {
             session.setAttribute("user", TestUserBean.builder().name("John Doe").mail("john.doe@test.net").build());
             return "connected";
-        }else {
+        } else {
             return "not connected";
         }
     }

@@ -39,11 +39,13 @@ class TokenHelper {
             + "qyQZALTix7qu3avP98eB946FnNqUWqsGyxmmpqSfxWTkdEPmBnKzaFPaYuQPsyAkFyA5RdAvMc"
             + "wqj8tXHGt7CQ6v83tqk6dNAuKstpGiaYYB65BaPaV8EGJXWTp9ZQrRfn42xS9vGjRU6J";
 
-    Object parseTokenAndExtractBean(String token) throws UnauthorizedException {
+    void parseTokenAndExtractBean(PadlockSession session, String token) throws UnauthorizedException {
         try {
             JwtConsumer jwtConsumer = buildTokenConsumer();
             JwtClaims claims = jwtConsumer.processToClaims(token);
-            return deserializeBean(claims);
+            for(String name: claims.getClaimNames()) {
+                session.setAttribute(name, deserializeBean(claims.getClaimValue(name, String.class)));
+            }
         } catch (Exception e) {
             logger.log(Level.WARNING, "Error while parsing JWT token", e);
             throw new UnauthorizedException();
@@ -74,8 +76,7 @@ class TokenHelper {
         return new JwtConsumerBuilder().setVerificationKey(new HmacKey(JWT_HS256_KEY.getBytes())).build();
     }
 
-    private Object deserializeBean(JwtClaims claims) throws Exception {
-        String serializedBean = claims.getClaimValue(BEAN_CLAIM_KEY, String.class);
+    private Object deserializeBean(String serializedBean) throws Exception {
         try (ObjectInputStream ois = buildObjectInputStream(serializedBean)) {
             return ois.readObject();
         }

@@ -69,9 +69,8 @@ public class PadlockFilter implements ContainerRequestFilter, ContainerResponseF
         if (tokenCookie == null) {
             throw new UnauthorizedException();
         }
-
-        Object bean = tokenHelper.parseTokenAndExtractBean(tokenCookie.getValue());
-        padlockBeanWrapper.setBean(bean);
+        
+        tokenHelper.parseTokenAndExtractBean(session, tokenCookie.getValue());
     }
 
     private void checkAuthorization(ContainerRequestContext requestContext) throws UnauthorizedException {
