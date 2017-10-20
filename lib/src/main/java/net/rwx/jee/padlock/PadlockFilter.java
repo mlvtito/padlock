@@ -38,9 +38,6 @@ public class PadlockFilter implements ContainerRequestFilter, ContainerResponseF
     @Context
     private ResourceInfo resourceInfo;
     
-    @Context
-    private SecurityContext securityContext;
-
     @Inject
     private BeanManager beanManager;
 
