@@ -34,6 +34,13 @@ public class SimpleResource {
     public String getNameFromSession() {
         return session.getAttribute("user", TestUserBean.class).getName();
     }
+    
+    @GET
+    @Path("getMailFromSession")
+    @WithoutAuthentication
+    public String getMailFromSession() {
+        return session.getAttribute("user", TestUserBean.class).getMail();
+    }
 
     @GET
     @Path("withoutAuthentication")
@@ -48,6 +55,7 @@ public class SimpleResource {
     public String login(@FormParam("login") String login, @FormParam("password") String password) {
         if (login.equals(password)) {
             session.setAttribute("user", TestUserBean.builder().name("John Doe").mail("john.doe@test.net").build());
+            session.setAuthenticated(true);
             return "connected";
         } else {
             return "not connected";

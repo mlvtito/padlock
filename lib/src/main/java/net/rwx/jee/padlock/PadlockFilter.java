@@ -20,26 +20,26 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 
 /**
  *
  * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
  */
-@RequestScoped
 @Provider
 public class PadlockFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
-    @Inject
-    private PadlockBeanWrapper padlockBeanWrapper;
+    private static final String JWT_COOKIE_NAME = "JTOKEN";
 
     @Inject
     private PadlockSession session;
-    
-    private static final String JWT_COOKIE_NAME = "JTOKEN";
 
     @Context
     private ResourceInfo resourceInfo;
+    
+    @Context
+    private SecurityContext securityContext;
 
     @Inject
     private BeanManager beanManager;
@@ -50,9 +50,13 @@ public class PadlockFilter implements ContainerRequestFilter, ContainerResponseF
     @Override
     public void filter(ContainerRequestContext requestContext) {
         try {
+            readTokenCookie(requestContext);
             if (needAuthentication()) {
-                readTokenCookie(requestContext);
-                checkAuthorization(requestContext);
+                if( session.isAuthenticated() ) {
+                    checkAuthorization(requestContext);
+                }else {
+                    throw new UnauthorizedException();
+                }
             }
         } catch (UnauthorizedException ue) {
             unauthorized(requestContext);
@@ -60,17 +64,14 @@ public class PadlockFilter implements ContainerRequestFilter, ContainerResponseF
     }
 
     private boolean needAuthentication() {
-        return !resourceInfo.getResourceMethod().isAnnotationPresent(WithoutAuthentication.class)
-                && !resourceInfo.getResourceMethod().isAnnotationPresent(Identification.class);
+        return !resourceInfo.getResourceMethod().isAnnotationPresent(WithoutAuthentication.class);
     }
 
     private void readTokenCookie(ContainerRequestContext requestContext) throws UnauthorizedException {
         Cookie tokenCookie = requestContext.getCookies().get(JWT_COOKIE_NAME);
-        if (tokenCookie == null) {
-            throw new UnauthorizedException();
+        if (tokenCookie != null) {
+            tokenHelper.parseTokenAndExtractBean(session, tokenCookie.getValue());
         }
-        
-        tokenHelper.parseTokenAndExtractBean(session, tokenCookie.getValue());
     }
 
     private void checkAuthorization(ContainerRequestContext requestContext) throws UnauthorizedException {

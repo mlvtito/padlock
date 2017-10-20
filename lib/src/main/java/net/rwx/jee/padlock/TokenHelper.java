@@ -30,9 +30,10 @@ import org.jose4j.lang.JoseException;
 @ApplicationScoped
 class TokenHelper {
 
+    private static final String CLAIM_AUTHENTICATED = "net.rwx.padlock.authenticated";
+    private static final String CLAIM_ATTRIBUTE_PREFIX = "net.rwx.padlock.attribute.";
+    
     private static final Logger logger = Logger.getLogger(TokenHelper.class.getName());
-
-    private static final String BEAN_CLAIM_KEY = "padlockBean";
 
     private static final String JWT_HS256_KEY = "mdLhrTztDGE8DepxnTqoedwPgiGm64oQwm4j92Ad"
             + "VNWeiMRiq6PZWvZ8SAGrUuG5xogKkUyH6hcSkrvS4EdwzHnTj2sdshLXwBzyR2qdqCe5b6hTJt"
@@ -44,7 +45,12 @@ class TokenHelper {
             JwtConsumer jwtConsumer = buildTokenConsumer();
             JwtClaims claims = jwtConsumer.processToClaims(token);
             for(String name: claims.getClaimNames()) {
-                session.setAttribute(name, deserializeBean(claims.getClaimValue(name, String.class)));
+                if( name.startsWith(CLAIM_ATTRIBUTE_PREFIX) ) {
+                    String attributeName = name.substring(CLAIM_ATTRIBUTE_PREFIX.length());
+                    session.setAttribute(attributeName, deserializeBean(claims.getClaimValue(name, String.class)));
+                }else if(name.equals(CLAIM_AUTHENTICATED)) {
+                    session.setAuthenticated(claims.getClaimValue(name, Boolean.class));
+                }
             }
         } catch (Exception e) {
             logger.log(Level.WARNING, "Error while parsing JWT token", e);
@@ -59,8 +65,9 @@ class TokenHelper {
             while( names.hasMoreElements() ) {
                 String name = names.nextElement();
                 String claim = serializeBean(bean.getAttribute(name));
-                claims.setClaim(name, claim);
+                claims.setClaim(CLAIM_ATTRIBUTE_PREFIX + name, claim);
             }
+            claims.setClaim(CLAIM_AUTHENTICATED, bean.isAuthenticated());
             JsonWebSignature jws = new JsonWebSignature();
             jws.setPayload(claims.toJson());
             jws.setKey(new HmacKey(JWT_HS256_KEY.getBytes()));

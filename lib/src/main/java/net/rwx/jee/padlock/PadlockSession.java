@@ -13,8 +13,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.ext.Provider;
 
 /**
  *
@@ -22,21 +20,28 @@ import javax.ws.rs.ext.Provider;
  */
 @RequestScoped
 //@Provider
-public class PadlockSession implements HttpSession{
-    
+public class PadlockSession implements HttpSession {
+
     private final Map<String, Object> attributes = new HashMap<>();
-    
+    private boolean authenticated = false;
 //    @Context
 //    private ServletContext servletContext;
-    
     public <T> T getAttribute(String name, Class<T> type) {
         return (T) attributes.get(name);
+    }
+
+    public void setAuthenticated(boolean authenticated) {
+        this.authenticated = authenticated;
+    }
+
+    public boolean isAuthenticated() {
+        return authenticated;
     }
     
     public boolean isEmpty() {
         return attributes.isEmpty();
     }
-    
+
     @Override
     public void setAttribute(String name, Object value) {
         attributes.put(name, value);
