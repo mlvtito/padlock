@@ -19,6 +19,12 @@
     
     <dependencies>
         <dependency>
+            <!-- https://github.com/phxql/argon2-jvm -->
+            <groupId>de.mkammerer</groupId>
+            <artifactId>argon2-jvm</artifactId>
+            <version>2.2</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
