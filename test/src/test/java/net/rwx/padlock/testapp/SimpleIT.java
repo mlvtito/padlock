@@ -95,4 +95,59 @@ public class SimpleIT {
      
         assertThat(value).isEqualTo("my value");
     }
+    
+    @Test
+    public void should_BeAuthorized_while_ReadingFromAuthorizedWithQueryParam_having_GoodValue() {
+        String value = client.path("api/auth/authorizationWithQueryParam")
+                .queryParam("param", "good value")
+                .request(MediaType.APPLICATION_JSON).cookie(COOKIE_AUTHENTICATED).get(String.class);
+     
+        assertThat(value).isEqualTo("my value");
+    }
+    
+    @Test
+    public void should_NotBeAuthorized_while_ReadingFromAuthorizedWithQueryParam_having_WrongValue() {
+        Response.StatusType status = client.path("api/auth/authorizationWithQueryParam")
+                .queryParam("param", "wrong value")
+                .request(MediaType.APPLICATION_JSON).cookie(COOKIE_AUTHENTICATED).get().getStatusInfo();
+     
+        assertThat(status.getStatusCode()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+    
+    @Test
+    public void should_NotBeAuthorized_while_ReadingFromAuthorizedWithQueryParam_having_NoValue() {
+        Response.StatusType status = client.path("api/auth/authorizationWithQueryParam")
+                .request(MediaType.APPLICATION_JSON).cookie(COOKIE_AUTHENTICATED).get().getStatusInfo();
+     
+        assertThat(status.getStatusCode()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+    }
+    
+    
+    
+    
+    @Test
+    public void should_BeAuthorized_while_ReadingFromAuthorizedWithPathParam_having_GoodValue() {
+        String value = client.path("api/auth/authorizationWithPathParam")
+                .path("good value")
+                .request(MediaType.APPLICATION_JSON).cookie(COOKIE_AUTHENTICATED).get(String.class);
+     
+        assertThat(value).isEqualTo("my value");
+    }
+    
+    @Test
+    public void should_NotBeAuthorized_while_ReadingFromAuthorizedWithPathParam_having_WrongValue() {
+        Response.StatusType status = client.path("api/auth/authorizationWithPathParam")
+                .path("wrong value")
+                .request(MediaType.APPLICATION_JSON).cookie(COOKIE_AUTHENTICATED).get().getStatusInfo();
+     
+        assertThat(status.getStatusCode()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+    
+    @Test
+    public void should_NotBeAuthorized_while_ReadingFromAuthorizedWithPathParam_having_NoValue() {
+        Response.StatusType status = client.path("api/auth/authorizationWithPathParam")
+                .request(MediaType.APPLICATION_JSON).cookie(COOKIE_AUTHENTICATED).get().getStatusInfo();
+     
+        assertThat(status.getStatusCode()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+    }
 }
