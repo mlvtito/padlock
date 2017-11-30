@@ -79,4 +79,20 @@ public class SimpleIT {
         
         assertThat(mail).isEqualTo("john.doe@test.net");
     }
+    
+    @Test
+    public void should_NotBeAuthorized_while_ReadingFromAlwaysUnauthorized() {
+        Response.StatusType status = client.path("api/auth/unauthorized")
+                .request(MediaType.APPLICATION_JSON).cookie(COOKIE_AUTHENTICATED).get().getStatusInfo();
+     
+        assertThat(status.getStatusCode()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+    
+    @Test
+    public void should_BeAuthorized_while_ReadingFromAlwaysAuthorized() {
+        String value = client.path("api/auth/authorized")
+                .request(MediaType.APPLICATION_JSON).cookie(COOKIE_AUTHENTICATED).get(String.class);
+     
+        assertThat(value).isEqualTo("my value");
+    }
 }

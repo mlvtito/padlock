@@ -5,13 +5,12 @@
  */
 package net.rwx.padlock.testapp;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-
 /**
  *
  * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
  */
-@ApplicationPath("api")
-public class JAXRSConfiguration extends Application {
+public class AuthorizationAlwaysTrue {
+    public boolean authorized() {
+        return true;
+    }
 }

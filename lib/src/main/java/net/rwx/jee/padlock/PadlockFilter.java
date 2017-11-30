@@ -5,9 +5,7 @@
  */
 package net.rwx.jee.padlock;
 
-import net.rwx.jee.padlock.annotations.Identification;
 import net.rwx.jee.padlock.annotations.WithoutAuthentication;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -20,7 +18,6 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 
 /**
