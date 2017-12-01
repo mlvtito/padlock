@@ -32,14 +32,16 @@ public class SimpleResource {
     @GET
     @Path("getNameFromSession")
     public String getNameFromSession() {
-        return session.getAttribute("user", TestUserBean.class).getName();
+        TestUserBean user = session.getAttribute("user", TestUserBean.class);
+        return user.getName();
     }
     
     @GET
     @Path("getMailFromSession")
     @WithoutAuthentication
     public String getMailFromSession() {
-        return session.getAttribute("user", TestUserBean.class).getMail();
+        TestUserBean user = session.getAttribute("user", TestUserBean.class);
+        return user.getMail();
     }
 
     @GET

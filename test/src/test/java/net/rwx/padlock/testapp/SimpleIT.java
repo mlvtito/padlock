@@ -60,7 +60,6 @@ public class SimpleIT {
         Map<String, NewCookie> cookies = client.path("api/simple/login")
                 .request(MediaType.APPLICATION_JSON).post(Entity.form(form)).getCookies();
 
-        System.out.println("####### " + cookies.get("JTOKEN"));
         assertThat(cookies).containsKeys("JTOKEN");
     }
     
@@ -121,9 +120,6 @@ public class SimpleIT {
      
         assertThat(status.getStatusCode()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
     }
-    
-    
-    
     
     @Test
     public void should_BeAuthorized_while_ReadingFromAuthorizedWithPathParam_having_GoodValue() {
