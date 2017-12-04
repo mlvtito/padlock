@@ -40,7 +40,7 @@ public class PadlockFilter implements ContainerRequestFilter, ContainerResponseF
 
     @Inject
     private TokenHelper tokenHelper;
-
+    
     @Override
     public void filter(ContainerRequestContext requestContext) {
         try {

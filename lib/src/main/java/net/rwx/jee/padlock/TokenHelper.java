@@ -12,9 +12,18 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Base64;
 import java.util.Enumeration;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Providers;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
@@ -35,19 +44,22 @@ class TokenHelper {
     
     private static final Logger logger = Logger.getLogger(TokenHelper.class.getName());
 
-    private static final String JWT_HS256_KEY = "mdLhrTztDGE8DepxnTqoedwPgiGm64oQwm4j92Ad"
-            + "VNWeiMRiq6PZWvZ8SAGrUuG5xogKkUyH6hcSkrvS4EdwzHnTj2sdshLXwBzyR2qdqCe5b6hTJt"
-            + "qyQZALTix7qu3avP98eB946FnNqUWqsGyxmmpqSfxWTkdEPmBnKzaFPaYuQPsyAkFyA5RdAvMc"
-            + "wqj8tXHGt7CQ6v83tqk6dNAuKstpGiaYYB65BaPaV8EGJXWTp9ZQrRfn42xS9vGjRU6J";
-
+    @Context
+    private Application application;
+    
+    @Inject
+    private BeanManager beanManager;
+    
     void parseTokenAndExtractBean(PadlockSession session, String token) throws UnauthorizedException {
         try {
+            
             JwtConsumer jwtConsumer = buildTokenConsumer();
             JwtClaims claims = jwtConsumer.processToClaims(token);
             for(String name: claims.getClaimNames()) {
                 if( name.startsWith(CLAIM_ATTRIBUTE_PREFIX) ) {
                     String attributeName = name.substring(CLAIM_ATTRIBUTE_PREFIX.length());
-                    session.setAttribute(attributeName, deserializeBean(claims.getClaimValue(name, String.class)));
+                    Object bean = deserializeBean(claims.getClaimValue(name, String.class));
+                    session.setAttribute(attributeName, bean);
                 }else if(name.equals(CLAIM_AUTHENTICATED)) {
                     session.setAuthenticated(claims.getClaimValue(name, Boolean.class));
                 }
@@ -70,7 +82,7 @@ class TokenHelper {
             claims.setClaim(CLAIM_AUTHENTICATED, bean.isAuthenticated());
             JsonWebSignature jws = new JsonWebSignature();
             jws.setPayload(claims.toJson());
-            jws.setKey(new HmacKey(JWT_HS256_KEY.getBytes()));
+            jws.setKey(new HmacKey(retreiveProvidedKey()));
             jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.HMAC_SHA256);
             return jws.getCompactSerialization();
         } catch (IOException | JoseException e) {
@@ -80,9 +92,20 @@ class TokenHelper {
     }
 
     private JwtConsumer buildTokenConsumer() {
-        return new JwtConsumerBuilder().setVerificationKey(new HmacKey(JWT_HS256_KEY.getBytes())).build();
+        return new JwtConsumerBuilder().setVerificationKey(new HmacKey(retreiveProvidedKey())).build();
     }
 
+    private byte[] retreiveProvidedKey() {
+        Optional<Class<?>> keyProviderType = application.getClasses().stream().filter(cls -> KeyProvider.class.isAssignableFrom(cls)).findFirst();
+        if (keyProviderType.isPresent()) {
+            Bean<KeyProvider> bean = (Bean<KeyProvider>) beanManager.resolve(beanManager.getBeans(keyProviderType.get()));
+            KeyProvider keyProvider = (KeyProvider) beanManager.getReference(bean, keyProviderType.get(), beanManager.createCreationalContext(bean));
+            return keyProvider.getKey();
+        } else {
+            throw new RuntimeException("No key provided");
+        }
+    }
+    
     private Object deserializeBean(String serializedBean) throws Exception {
         try (ObjectInputStream ois = buildObjectInputStream(serializedBean)) {
             return ois.readObject();
