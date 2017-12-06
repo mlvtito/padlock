@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2017 Arnaud Fonce <arnaud.fonce@r-w-x.net>.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package net.rwx.jee.padlock;
 
@@ -9,8 +19,6 @@ import net.rwx.jee.padlock.resources.TestUnauthorization;
 import net.rwx.jee.padlock.resources.TestAuthorized;
 import net.rwx.jee.padlock.resources.TestAuthorizedWithParameter;
 import net.rwx.jee.padlock.resources.TestResource;
-import net.rwx.jee.padlock.annotations.Identification;
-import net.rwx.jee.padlock.annotations.WithoutAuthentication;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,7 +33,6 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import net.rwx.jee.padlock.annotations.Authorization;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +46,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Ignore;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
