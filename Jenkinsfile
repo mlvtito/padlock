@@ -11,12 +11,12 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build & Sign') {
             tools { 
                 maven 'Maven3.3.9' 
             }
             steps {
-                sh "mvn clean install -DskipTests"
+                sh "mvn clean install -P sign"
             }
             post {
                 success {
