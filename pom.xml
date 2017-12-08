@@ -17,12 +17,15 @@ limitations under the License.
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     
-    <groupId>net.rwx</groupId>
+    <groupId>net.r-w-x</groupId>
     <artifactId>padlock-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>Padlock Parent</name>
     <packaging>pom</packaging>
     
+    <description>Parent project for Padlock library.</description>
+    <url>http://padlock.r-w-x.net</url>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -30,6 +33,21 @@ limitations under the License.
         </license>
     </licenses>
     
+    <scm>
+        <connection>scm:git:https://backend.r-w-x.net/scm/git/jee/padlock.git</connection>
+        <developerConnection>scm:git:https://backend.r-w-x.net/scm/git/jee/padlock.git</developerConnection>
+        <url>https://backend.r-w-x.net/scm/jee/padlock</url>
+    </scm>
+    
+    <developers>
+        <developer>
+            <name>Arnaud Fonce</name>
+            <email>arnaud.fonce@r-w-x.net</email>
+            <organization>r-w-x</organization>
+            <organizationUrl>http://www.r-w-x.net</organizationUrl>
+        </developer>
+    </developers>
+  
     <modules>
         <module>lib</module>
         <module>test</module>

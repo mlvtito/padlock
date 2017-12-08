@@ -17,7 +17,7 @@ package net.rwx.jee.padlock.resources;
 
 /**
  *
- * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
+ * @author <a href="mailto:arnaud.fonce@r-w-x.net">Arnaud Fonce</a>
  */
 public class TestAuthorizedWithParameter {
     private Integer firstParameter;

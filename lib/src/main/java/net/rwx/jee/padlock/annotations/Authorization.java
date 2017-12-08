@@ -22,7 +22,7 @@ import java.lang.annotation.Target;
 
 /**
  *
- * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
+ * @author <a href="mailto:arnaud.fonce@r-w-x.net">Arnaud Fonce</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

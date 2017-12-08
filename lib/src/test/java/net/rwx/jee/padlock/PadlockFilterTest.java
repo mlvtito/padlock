@@ -51,7 +51,7 @@ import static org.mockito.Mockito.verify;
 
 /**
  *
- * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
+ * @author <a href="mailto:arnaud.fonce@r-w-x.net">Arnaud Fonce</a>
  */
 @RunWith(MockitoJUnitRunner.class)
 @Ignore

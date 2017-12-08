@@ -19,7 +19,7 @@ import javax.enterprise.context.RequestScoped;
 
 /**
  *
- * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
+ * @author <a href="mailto:arnaud.fonce@r-w-x.net">Arnaud Fonce</a>
  */
 @RequestScoped
 public class PadlockBeanWrapper {

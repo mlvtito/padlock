@@ -25,7 +25,7 @@ import net.rwx.jee.padlock.annotations.WithoutAuthentication;
 
 /**
  *
- * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
+ * @author <a href="mailto:arnaud.fonce@r-w-x.net">Arnaud Fonce</a>
  */
 public class TestResource {
     public void methodWithAuthentication() {

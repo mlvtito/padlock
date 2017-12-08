@@ -41,7 +41,7 @@ import org.jose4j.lang.JoseException;
 
 /**
  *
- * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
+ * @author <a href="mailto:arnaud.fonce@r-w-x.net">Arnaud Fonce</a>
  */
 @ApplicationScoped
 class TokenHelper {

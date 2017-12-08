@@ -32,7 +32,7 @@ import javax.ws.rs.ext.Provider;
 
 /**
  *
- * @author Arnaud Fonce <arnaud.fonce@r-w-x.net>
+ * @author <a href="mailto:arnaud.fonce@r-w-x.net">Arnaud Fonce</a>
  */
 @Provider
 public class PadlockFilter implements ContainerRequestFilter, ContainerResponseFilter {
