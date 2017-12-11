@@ -21,6 +21,7 @@ pipeline {
             post {
                 success {
                     archive "**/lib/target/*.jar"
+                    archive "**/lib/target/*.jar.asc"
                 }
             }
         }
