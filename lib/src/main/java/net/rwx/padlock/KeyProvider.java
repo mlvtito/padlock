@@ -15,10 +15,33 @@
  */
 package net.rwx.padlock;
 
+import javax.ws.rs.ext.Provider;
+
 /**
+ * Create a class that inherit from {@link KeyProvider} to define the key used to encrypt session token.
+ *
+ * <p>
+ * The created class must be annoted with {@link Provider}.</p>
+ *
+ * <p>
+ * For instance :
+ * 
+ * <pre>
+ * &#64;Provider
+ * public class KeyProviderImpl implements KeyProvider {
+ *
+ *   &#64;Override
+ *   public byte[] getKey() {
+ *       return "My Key...".getBytes();
+ *   }
+ * }
+ * </pre>
+ *
+ * @see Provider
  *
  * @author <a href="mailto:arnaud.fonce@r-w-x.net">Arnaud Fonce</a>
  */
 public interface KeyProvider {
+
     byte[] getKey();
 }

@@ -25,7 +25,11 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
 
 /**
- *
+ * Provide a way to bind objects across more than one request.
+ * 
+ * <p>{@link PadlockSession} inherit from {@link HttpSession} to keep same method signatures.</p>
+ * 
+ * @see HttpSession
  * @author <a href="mailto:arnaud.fonce@r-w-x.net">Arnaud Fonce</a>
  */
 @RequestScoped
