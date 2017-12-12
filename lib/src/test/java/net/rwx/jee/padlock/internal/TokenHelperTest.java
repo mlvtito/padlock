@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.rwx.jee.padlock;
+package net.rwx.jee.padlock.internal;
 
+import net.rwx.jee.padlock.PadlockSession;
+import net.rwx.jee.padlock.TestSessionBean;
+import net.rwx.jee.padlock.internal.TokenHelper;
 import net.rwx.jee.padlock.resources.TestUnserializableSessionBean;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Ignore;

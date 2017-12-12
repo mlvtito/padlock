@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.rwx.jee.padlock;
+package net.rwx.jee.padlock.internal;
 
 import net.rwx.jee.padlock.resources.TestUnauthorization;
 import net.rwx.jee.padlock.resources.TestAuthorized;
@@ -33,6 +33,7 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import net.rwx.jee.padlock.PadlockSession;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,9 +72,6 @@ public class PadlockFilterTest {
 
     @InjectMocks
     private PadlockFilter padlockFilter;
-
-    @Mock
-    private PadlockBeanWrapper padlockBeanWrapper;
 
     @Mock
     private TokenHelper tokenHelper;
@@ -156,16 +154,6 @@ public class PadlockFilterTest {
     public void should_Authorized_when_FilteringRequest_having_ValidToken() throws IOException, UnauthorizedException {
         padlockFilter.filter(requestContext);
         assertAuthorized();
-    }
-
-    @Test
-    public void should_SetPadlockBean_when_FilteringRequest_having_ValidToken() throws IOException, UnauthorizedException {
-        padlockFilter.filter(requestContext);
-
-        ArgumentCaptor<Object> padlockBeanCaptor = ArgumentCaptor.forClass(Object.class);
-        verify(padlockBeanWrapper).setBean(padlockBeanCaptor.capture());
-        TestSessionBean sessionBean = (TestSessionBean) padlockBeanCaptor.getValue();
-        assertThat(sessionBean.getLogin()).isEqualTo("test@test.net");
     }
 
     @Test

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.rwx.jee.padlock;
+package net.rwx.jee.padlock.internal;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;

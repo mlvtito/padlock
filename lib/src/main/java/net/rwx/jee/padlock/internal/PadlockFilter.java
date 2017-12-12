@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.rwx.jee.padlock;
+package net.rwx.jee.padlock.internal;
 
 import net.rwx.jee.padlock.annotations.WithoutAuthentication;
 import javax.enterprise.inject.spi.BeanManager;
@@ -29,13 +29,14 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
+import net.rwx.jee.padlock.PadlockSession;
 
 /**
  *
  * @author <a href="mailto:arnaud.fonce@r-w-x.net">Arnaud Fonce</a>
  */
 @Provider
-public class PadlockFilter implements ContainerRequestFilter, ContainerResponseFilter {
+class PadlockFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     private static final String JWT_COOKIE_NAME = "JTOKEN";
 
