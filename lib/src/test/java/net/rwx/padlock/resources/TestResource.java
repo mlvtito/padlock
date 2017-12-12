@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.rwx.jee.padlock.resources;
+package net.rwx.padlock.resources;
 
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
-import net.rwx.jee.padlock.TestSessionBean;
-import net.rwx.jee.padlock.annotations.Authorization;
-import net.rwx.jee.padlock.annotations.AuthorizationParameter;
-import net.rwx.jee.padlock.annotations.Identification;
-import net.rwx.jee.padlock.annotations.WithoutAuthentication;
+import net.rwx.padlock.TestSessionBean;
+import net.rwx.padlock.annotations.Authorization;
+import net.rwx.padlock.annotations.AuthorizationParameter;
+import net.rwx.padlock.annotations.Identification;
+import net.rwx.padlock.annotations.WithoutAuthentication;
 
 /**
  *

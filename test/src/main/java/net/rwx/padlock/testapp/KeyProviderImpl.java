@@ -16,7 +16,7 @@
 package net.rwx.padlock.testapp;
 
 import javax.ws.rs.ext.Provider;
-import net.rwx.jee.padlock.KeyProvider;
+import net.rwx.padlock.KeyProvider;
 
 /**
  *

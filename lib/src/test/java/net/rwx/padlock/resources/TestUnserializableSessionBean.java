@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.rwx.jee.padlock.resources;
+package net.rwx.padlock.resources;
 
 /**
  *
@@ -51,7 +51,7 @@ public class TestUnserializableSessionBean {
         }
 
         public TestUnserializableSessionBean build() {
-            return new net.rwx.jee.padlock.resources.TestUnserializableSessionBean(login, fullName);
+            return new net.rwx.padlock.resources.TestUnserializableSessionBean(login, fullName);
         }
     }
 

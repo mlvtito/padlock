@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.rwx.jee.padlock.internal;
+package net.rwx.padlock.internal;
 
-import net.rwx.jee.padlock.annotations.WithoutAuthentication;
+import net.rwx.padlock.annotations.WithoutAuthentication;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -29,7 +29,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
-import net.rwx.jee.padlock.PadlockSession;
+import net.rwx.padlock.PadlockSession;
 
 /**
  *

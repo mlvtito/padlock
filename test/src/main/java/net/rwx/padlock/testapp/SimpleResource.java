@@ -20,8 +20,8 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import net.rwx.jee.padlock.PadlockSession;
-import net.rwx.jee.padlock.annotations.WithoutAuthentication;
+import net.rwx.padlock.PadlockSession;
+import net.rwx.padlock.annotations.WithoutAuthentication;
 
 /**
  *

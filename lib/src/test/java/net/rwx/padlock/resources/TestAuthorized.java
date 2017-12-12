@@ -13,42 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.rwx.jee.padlock.resources;
+package net.rwx.padlock.resources;
 
 /**
  *
  * @author <a href="mailto:arnaud.fonce@r-w-x.net">Arnaud Fonce</a>
  */
-public class TestAuthorizedWithParameter {
-    private Integer firstParameter;
-    private Integer secondParameter;
-    private Integer myParameter;
-    
+public class TestAuthorized {
     public boolean authorized() {
         return true;
-    }
-
-    public Integer getFirstParameter() {
-        return firstParameter;
-    }
-
-    public void setFirstParameter(Integer firstParameter) {
-        this.firstParameter = firstParameter;
-    }
-
-    public Integer getSecondParameter() {
-        return secondParameter;
-    }
-
-    public void setSecondParameter(Integer secondParameter) {
-        this.secondParameter = secondParameter;
-    }
-
-    public Integer getMyParameter() {
-        return myParameter;
-    }
-
-    public void setMyParameter(Integer pathParameter) {
-        this.myParameter = pathParameter;
     }
 }

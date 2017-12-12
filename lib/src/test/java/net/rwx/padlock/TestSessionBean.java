@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.rwx.jee.padlock;
+package net.rwx.padlock;
 
 import java.io.Serializable;
 
@@ -53,7 +53,7 @@ public class TestSessionBean implements Serializable {
         }
 
         public TestSessionBean build() {
-            return new net.rwx.jee.padlock.TestSessionBean(login, fullName);
+            return new net.rwx.padlock.TestSessionBean(login, fullName);
         }
     }
 

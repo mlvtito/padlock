@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.rwx.jee.padlock.internal;
+package net.rwx.padlock.internal;
 
-import net.rwx.jee.padlock.internal.ParamConverters;
+import net.rwx.padlock.internal.ParamConverters;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.assertj.core.api.Assertions.assertThat;

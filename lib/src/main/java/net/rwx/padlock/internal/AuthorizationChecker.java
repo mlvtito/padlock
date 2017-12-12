@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.rwx.jee.padlock.internal;
+package net.rwx.padlock.internal;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import net.rwx.jee.padlock.annotations.Authorization;
+import net.rwx.padlock.annotations.Authorization;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.ws.rs.container.ContainerRequestContext;
-import net.rwx.jee.padlock.annotations.AuthorizationParameters;
+import net.rwx.padlock.annotations.AuthorizationParameters;
 
 /**
  *
@@ -125,7 +125,7 @@ class AuthorizationChecker {
 
         private Collection<AuthorizationParameter> buildAuthorizationParameters() {
             Collection<AuthorizationParameter> authParameters = new ArrayList<>();
-            for (net.rwx.jee.padlock.annotations.AuthorizationParameter paramAnnotation : getParameterAnnotations()) {
+            for (net.rwx.padlock.annotations.AuthorizationParameter paramAnnotation : getParameterAnnotations()) {
                 authParameters.add(
                         AuthorizationParameter.builder()
                         .name(paramAnnotation.value())
@@ -137,16 +137,16 @@ class AuthorizationChecker {
             return authParameters;
         }
 
-        private net.rwx.jee.padlock.annotations.AuthorizationParameter[] getParameterAnnotations() {
+        private net.rwx.padlock.annotations.AuthorizationParameter[] getParameterAnnotations() {
             AuthorizationParameters params = authorizedMethod.getAnnotation(AuthorizationParameters.class);
-            net.rwx.jee.padlock.annotations.AuthorizationParameter param = authorizedMethod.getAnnotation(net.rwx.jee.padlock.annotations.AuthorizationParameter.class);
+            net.rwx.padlock.annotations.AuthorizationParameter param = authorizedMethod.getAnnotation(net.rwx.padlock.annotations.AuthorizationParameter.class);
             if (params != null) {
                 return params.value();
             }else if(param != null) {
-                net.rwx.jee.padlock.annotations.AuthorizationParameter[] paramsArray = {param};
+                net.rwx.padlock.annotations.AuthorizationParameter[] paramsArray = {param};
                 return paramsArray;
             } else {
-                return new net.rwx.jee.padlock.annotations.AuthorizationParameter[0];
+                return new net.rwx.padlock.annotations.AuthorizationParameter[0];
             }
         }
     }

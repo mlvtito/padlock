@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.rwx.jee.padlock.internal;
+package net.rwx.padlock.internal;
 
 import java.util.Collection;
 import java.util.HashMap;

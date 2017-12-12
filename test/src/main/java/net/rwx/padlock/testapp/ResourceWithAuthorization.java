@@ -19,8 +19,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
-import net.rwx.jee.padlock.annotations.Authorization;
-import net.rwx.jee.padlock.annotations.AuthorizationParameter;
+import net.rwx.padlock.annotations.Authorization;
+import net.rwx.padlock.annotations.AuthorizationParameter;
 
 /**
  *

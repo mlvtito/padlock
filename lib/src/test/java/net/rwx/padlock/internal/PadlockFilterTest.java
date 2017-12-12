@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.rwx.jee.padlock.internal;
+package net.rwx.padlock.internal;
 
-import net.rwx.jee.padlock.resources.TestUnauthorization;
-import net.rwx.jee.padlock.resources.TestAuthorized;
-import net.rwx.jee.padlock.resources.TestAuthorizedWithParameter;
-import net.rwx.jee.padlock.resources.TestResource;
+import net.rwx.padlock.internal.TokenHelper;
+import net.rwx.padlock.internal.UnauthorizedException;
+import net.rwx.padlock.internal.PadlockFilter;
+import net.rwx.padlock.internal.ParamConverters;
+import net.rwx.padlock.resources.TestUnauthorization;
+import net.rwx.padlock.resources.TestAuthorized;
+import net.rwx.padlock.resources.TestAuthorizedWithParameter;
+import net.rwx.padlock.resources.TestResource;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,7 +37,7 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import net.rwx.jee.padlock.PadlockSession;
+import net.rwx.padlock.PadlockSession;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
