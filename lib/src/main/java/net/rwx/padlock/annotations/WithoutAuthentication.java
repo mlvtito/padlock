@@ -19,9 +19,34 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.rwx.padlock.PadlockSession;
 
 /**
- *
+ * Use this annotation to define JAX-RS resource that does not need authentication.
+ * 
+ * <p>Authentication is not valid until a valid cookie token is present with an authenticated claim to "true"</p>
+ * 
+ * <p>To validate or invalidate an authentication, use {@link PadlockSession#setAuthenticated(boolean) }.</p>
+ * 
+ * <p>
+ * For instance : 
+ * <pre>
+ * &#64;POST
+ * &#64;WithoutAuthentication
+ * public void login(&#64;FormParam("email") String email, 
+ *                 &#64;FormParam("password") String password) {
+ *   String encrypted = encrypt(password);
+ *   if( userService.check(email, encrypted) ) {
+ *     session.setAuthenticated(true);
+ *   }else {
+ *     throw new NotAuthorizedException();
+ *   }
+ * }
+ * </pre>
+ * </p>
+ * 
+ * @see PadlockSession#setAuthenticated(boolean) 
+ * @see PadlockSession#isAuthenticated() 
  * @author <a href="mailto:arnaud.fonce@r-w-x.net">Arnaud Fonce</a>
  */
 @Retention(RetentionPolicy.RUNTIME)

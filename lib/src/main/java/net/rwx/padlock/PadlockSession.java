@@ -27,6 +27,8 @@ import javax.servlet.http.HttpSessionContext;
 /**
  * Provide a way to bind objects across more than one request.
  * 
+ * Object use serialization to be added into session token.
+ * 
  * <p>{@link PadlockSession} inherit from {@link HttpSession} to keep same method signatures.</p>
  * 
  * @see HttpSession

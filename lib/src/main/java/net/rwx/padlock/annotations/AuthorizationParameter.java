@@ -22,7 +22,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * An annotation to give access the JAX-RS resource parameters to the authorization class define with 
+ * {@link Authorization}.
+ * 
+ * <p></p>
+ * 
+ * @see Authorization
  * @author <a href="mailto:arnaud.fonce@r-w-x.net">Arnaud Fonce</a>
  */
 @Repeatable(AuthorizationParameters.class)

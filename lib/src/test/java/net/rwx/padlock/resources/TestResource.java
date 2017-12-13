@@ -20,7 +20,6 @@ import javax.ws.rs.QueryParam;
 import net.rwx.padlock.TestSessionBean;
 import net.rwx.padlock.annotations.Authorization;
 import net.rwx.padlock.annotations.AuthorizationParameter;
-import net.rwx.padlock.annotations.Identification;
 import net.rwx.padlock.annotations.WithoutAuthentication;
 
 /**
@@ -35,7 +34,6 @@ public class TestResource {
     public void methodWithoutAuthentication() {
     }
 
-    @Identification
     public TestSessionBean methodForIdentification() {
         return TestSessionBean.builder().login("test@test.net").fullName("Test Name").build();
     }
