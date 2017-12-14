@@ -167,6 +167,6 @@ class AuthorizationChecker {
     }
 
     public boolean authorized() {
-        return true;
+        return false;
     }
 }
