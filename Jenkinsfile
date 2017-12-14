@@ -55,7 +55,7 @@ pipeline {
                 maven 'Maven3.3.9' 
             }
             steps {
-                sh "cd lib && mvn clean deploy -P oss-deploy && cd .."
+                sh "cd lib && mvn deploy -P oss-deploy && cd .."
             }
         }
     }
