@@ -49,5 +49,14 @@ pipeline {
                 sh "mvn verify -P integration-test"
             }
         }
+
+        stage('Deploy to OSS') {
+            tools { 
+                maven 'Maven3.3.9' 
+            }
+            steps {
+                sh "cd lib && mvn clean deploy -P oss-deploy && cd .."
+            }
+        }
     }
 }
