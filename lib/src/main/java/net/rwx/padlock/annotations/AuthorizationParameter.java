@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * An annotation to give access the JAX-RS resource parameters to the authorization class define with 
  * {@link Authorization}.
  * 
- * <p>For instance, you can define a JAX-RS resource as below :
+ * <p>For instance, you can define a JAX-RS resource as below :</p>
  * <pre>
  * &#64;GET
  * &#64;Path("authorizationWithPathParam/{param}")
@@ -35,15 +35,14 @@ import java.lang.annotation.Target;
  *   return "my value";
  * }
  * </pre>
- * </p>
  * 
- * <p>Then the authorization class should have a setter for <i>param</i> parameter.
+ * <p>Then the authorization class should have a setter for <i>param</i> parameter.</p>
  * <pre>
  * public class AuthorizationWithParam {
  *   private String param;
  * 
  *   public boolean authorized() {
- *     return param != null && param.equals("good value");
+ *     return param != null &and;&and; param.equals("good value");
  *   }
  * 
  *   public void setParam(String param) {
@@ -51,7 +50,6 @@ import java.lang.annotation.Target;
  *   }
  * }
  * </pre>
- * </p>
  * @see Authorization
  * @author <a href="mailto:arnaud.fonce@r-w-x.net">Arnaud Fonce</a>
  */

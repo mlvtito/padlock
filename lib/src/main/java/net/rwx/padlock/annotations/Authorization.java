@@ -25,8 +25,7 @@ import java.lang.annotation.Target;
  * 
  * <p>The annotation value contains the class wich implement these rules.</p>
  * 
- * <p>
- * For instance :
+ * <p>For instance :</p>
  * <pre>
  * &#64;GET
  * &#64;Authorization(AuthorizationAlwaysTrue.class)
@@ -36,10 +35,8 @@ import java.lang.annotation.Target;
  * </pre>
  * As you can see in the example, <i>AuthorizationAlwaysTrue</i> will be the authorization class which is in charge of 
  * validating authorization.
- * </p>
  * 
  * <p>An authorization class must only define a <i>authorized</i> method which return a boolean value.</p>
- * <p>
  * For instance : 
  * <pre>
  * public class AuthorizationAlwaysTrue {
@@ -48,7 +45,6 @@ import java.lang.annotation.Target;
  *   }
  * }
  * </pre>
- * </p>
  * 
  * @see AuthorizationParameter
  * @author <a href="mailto:arnaud.fonce@r-w-x.net">Arnaud Fonce</a>

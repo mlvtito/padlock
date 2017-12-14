@@ -28,8 +28,7 @@ import net.rwx.padlock.PadlockSession;
  * 
  * <p>To validate or invalidate an authentication, use {@link PadlockSession#setAuthenticated(boolean) }.</p>
  * 
- * <p>
- * For instance : 
+ * <p>For instance : </p>
  * <pre>
  * &#64;POST
  * &#64;WithoutAuthentication
@@ -43,7 +42,6 @@ import net.rwx.padlock.PadlockSession;
  *   }
  * }
  * </pre>
- * </p>
  * 
  * @see PadlockSession#setAuthenticated(boolean) 
  * @see PadlockSession#isAuthenticated() 
