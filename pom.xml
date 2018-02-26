@@ -19,7 +19,7 @@ limitations under the License.
     
     <groupId>net.r-w-x</groupId>
     <artifactId>padlock-parent</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.3</version>
     <name>Padlock Parent</name>
     <packaging>pom</packaging>
     
