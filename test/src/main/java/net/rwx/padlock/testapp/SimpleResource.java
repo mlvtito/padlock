@@ -21,6 +21,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import net.rwx.padlock.PadlockSession;
+import net.rwx.padlock.PasswordService;
 import net.rwx.padlock.annotations.WithoutAuthentication;
 
 /**
@@ -30,9 +31,14 @@ import net.rwx.padlock.annotations.WithoutAuthentication;
 @Path("simple")
 public class SimpleResource {
 
+    private static final String PASSWORD_HASH = "";
+    
     @Inject
     private PadlockSession session;
 
+    @Inject
+    private PasswordService passwordService;
+    
     @GET
     @Path("noAnnotation")
     public String noAnnotation() {
@@ -65,7 +71,8 @@ public class SimpleResource {
     @Path("login")
     @WithoutAuthentication
     public String login(@FormParam("login") String login, @FormParam("password") String password) {
-        if (login.equals(password)) {
+        String hash = passwordService.hash(login.toCharArray(), true);
+        if (passwordService.verify(password.toCharArray(), hash, true)) {
             session.setAttribute("user", TestUserBean.builder().name("John Doe").mail("john.doe@test.net").build());
             session.setAuthenticated(true);
             return "connected";
