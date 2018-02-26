@@ -20,7 +20,7 @@ limitations under the License.
     <artifactId>padlock</artifactId>
     <packaging>jar</packaging>
     <name>Padlock Library</name>
-    <version>0.0.3</version>
+    <version>0.0.4-SNAPSHOT</version>
     
     <description>A library to enable security into JavaEE / JAX-RS application using JWT cookie.</description>
     <url>http://padlock.r-w-x.net</url>
