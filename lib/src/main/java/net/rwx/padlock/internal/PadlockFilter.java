@@ -99,7 +99,7 @@ class PadlockFilter implements ContainerRequestFilter, ContainerResponseFilter {
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
         if (!session.isEmpty()) {
             String token = tokenHelper.serializeBeanAndCreateToken(session);
-            NewCookie cookie = NewCookie.valueOf(JWT_COOKIE_NAME + "=" + token + ";Secure;HttpOnly");
+            NewCookie cookie = NewCookie.valueOf(JWT_COOKIE_NAME + "=" + token + ";Secure;HttpOnly;Path=/");
             responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, cookie);
         }
     }
