@@ -11,30 +11,16 @@ pipeline {
             }
         }
 
-        stage('Build & Sign') {
+        stage('Build & Unit Test') {
             tools { 
                 maven 'Maven3.3.9' 
             }
             steps {
-                sh "mvn clean install -P sign"
+                sh "mvn clean install"
             }
             post {
                 success {
                     archive "**/lib/target/*.jar"
-                    archive "**/lib/target/*.jar.asc"
-                }
-            }
-        }
-
-        stage('Unit Tests') {
-            tools { 
-                maven 'Maven3.3.9' 
-            }
-            steps {
-                sh "mvn test"
-            }
-            post {
-                always {
                     junit '**/lib/target/surefire-reports/TEST-*.xml'
                     step( [ $class: 'JacocoPublisher', execPattern: 'lib/target/jacoco.exec' ] )
                 }
