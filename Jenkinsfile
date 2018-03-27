@@ -36,12 +36,17 @@ pipeline {
             }
         }
 
-        stage('Deploy to OSS') {
+        stage('Sign & Deploy to OSS') {
             tools { 
                 maven 'Maven3.3.9' 
             }
             steps {
                 sh "cd lib && mvn clean deploy -P sign -DskipTests=true && cd .."
+            }
+            post {
+                success {
+                    archive "**/lib/target/*.jar.asc"
+                }
             }
         }
     }
