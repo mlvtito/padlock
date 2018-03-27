@@ -20,7 +20,7 @@ limitations under the License.
     <parent>
         <groupId>net.r-w-x</groupId>
         <artifactId>padlock-parent</artifactId>
-        <version>0.0.4</version>
+        <version>0.0.5-SNAPSHOT</version>
     </parent>
     
     <artifactId>testapp</artifactId>
